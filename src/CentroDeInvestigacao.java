@@ -1,6 +1,15 @@
 import java.util.ArrayList;
 
 public class CentroDeInvestigacao {
+    protected String nome;
+
+    public CentroDeInvestigacao(String nome){
+        this.nome=nome;
+    }
+
+    public String getNome() {
+        return nome;
+    }
 
     public static void main(String[] args) {
         ArrayList<Projeto> projetos = new ArrayList<Projeto>(24);
