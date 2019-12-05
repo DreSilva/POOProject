@@ -15,6 +15,10 @@ public class Projeto {
         Pessoa pe2 = new Pessoa("André Silva", "2000.andre.silva@gmail.com");
     }
 
+    public static void novaTarefa(int diaIn, int mesIn, int anoIn, int duracao, int percentagemConc ){
+        Tarefa t1 = new Tarefa(2,12,2019, 3,0);
+    }
+
     public Projeto(String nome, String acronimo, int diaIn, int mesIn, int anoIn, int duracao) {
         this.nome = nome;
         this.acronimo = acronimo;
