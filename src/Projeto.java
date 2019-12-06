@@ -4,11 +4,8 @@ public class Projeto {
     protected String nome, acronimo;
     protected Data dataInicio, dataDeFim;
     protected int duracao;
-
-    public static void main(String[] args) {
-        ArrayList<Pessoa> pessoas = new ArrayList<Pessoa>(24);
-        ArrayList<Tarefa> tarefas = new ArrayList<Tarefa>(24);
-    }
+    protected ArrayList<Pessoa> pessoas;
+    protected ArrayList<Tarefa> tarefas;
 
     public static void novaPessoa(String nome, String email){
         Pessoa pe1 = new Pessoa("Tomás Ventura", "ventura.tfp@gmail.com");
@@ -24,6 +21,7 @@ public class Projeto {
         this.acronimo = acronimo;
         this.dataInicio = new Data(diaIn, mesIn, anoIn);
         this.duracao = duracao;
+        this.dataDeFim = new Data(0,0,0);
 
     }
 }
