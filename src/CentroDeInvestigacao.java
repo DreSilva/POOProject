@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 
-public class CentroDeInvestigacao{
-    protected String nome;
-    protected ArrayList<Projeto> projetos = new ArrayList<Projeto>();
+public class CentroDeInvestigacao {
 
     public CentroDeInvestigacao(String nome){
         this.nome=nome;
