@@ -2,21 +2,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Main{
     protected NossaFrame frameCentros;
-    CentroDeInvestigacao CISUC;
-    public Main(String nome){
-        frameCentros = new NossaFrame(nome);
+    protected CentroDeInvestigacao CISUC;
+
+    public Main(){
+        CISUC = new CentroDeInvestigacao("CISUC");
+        novoProjeto(CISUC);
+        novaPessoa(CISUC);
+        frameCentros = new NossaFrame(CISUC.getNome());
         frameCentros.setTitle("Centro de Investigação");
         frameCentros.setSize(700,150);
         frameCentros.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameCentros.setVisible(true);
-        CISUC = new CentroDeInvestigacao("CISUC");
     }
 
     public static void main(String[] args) {
-        new Main("CISUC");
+        new Main();
     }
 
     private class ButtonListener implements ActionListener {
@@ -25,24 +29,29 @@ public class Main{
             String cmd = e.getActionCommand();
             if (cmd.equals("Listar Pessoas")) {
                 frameCentros.setVisible(false);
-                System.out.println("a");
+                CISUC.ListarPessoas(frameCentros);
+                //System.out.println("a");
             }
             else if (cmd.equals("Listar Projetos")) {
                 frameCentros.setVisible(false);
-                CISUC.ListarPessoasDoProjeto(frameCentros);
+                CISUC.ListarProjetos(frameCentros);
+                //CISUC.ListarPessoasDoProjeto(frameCentros);
                 //frameCentros.setVisible(true);
             }
             else if (cmd.equals("Adicionar Projeto")) {
                 frameCentros.setVisible(false);
-                System.out.println("c");
+                CISUC.AdicionarProjeto(frameCentros);
+                //System.out.println("c");
             }
             else if (cmd.equals("Listar PNCNDE")) {
                 frameCentros.setVisible(false);
-                System.out.println("d");
+                CISUC.ListarProjetosNConcluidosATempo(frameCentros);
+                //System.out.println("d");
             }
             else if (cmd.equals("Listar Projetos Concluidos")) {
                 frameCentros.setVisible(false);
-                System.out.println("e");
+                CISUC.ListarProjetosConcluidos(frameCentros);
+                //System.out.println("e");
             }
         }
     }
@@ -88,5 +97,52 @@ public class Main{
 
             this.add(panelInicial);
         }
+    }
+    public void novoProjeto(CentroDeInvestigacao CISUC) {
+        Projeto p1 = new Projeto("Projeto POO", "PPOO", 28, 11, 2019, 1);
+        Projeto p2 = new Projeto("Projeto IRC", "PIRC", 25, 11, 2019, 2);
+        Projeto p3 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+        Projeto p4 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+        Projeto p5 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+        Projeto p6 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+        Projeto p7 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+        Projeto p8 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+        Projeto p9 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+        Projeto p10 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+
+        CISUC.projetos.add(p1);
+        CISUC.projetos.add(p2);
+        CISUC.projetos.add(p3);
+        CISUC.projetos.add(p4);
+        CISUC.projetos.add(p5);
+        CISUC.projetos.add(p6);
+        CISUC.projetos.add(p7);
+        CISUC.projetos.add(p8);
+        CISUC.projetos.add(p9);
+        CISUC.projetos.add(p10);
+    }
+
+    public void novaPessoa(CentroDeInvestigacao CISUC){
+        Pessoa pe1 = new Pessoa("André Silva", "blabla.mail.com");
+        Pessoa pe2 = new Pessoa("Tomás Ventura", "blabla.mail.com");
+        Pessoa pe3 = new Pessoa("Zé Miguel", "blabla.mail.com");
+        Pessoa pe4 = new Pessoa("João Pedro", "blabla.mail.com");
+        Pessoa pe5 = new Pessoa("Zé António", "blabla.mail.com");
+        Pessoa pe6 = new Pessoa("Zé Pedro", "blabla.mail.com");
+        Pessoa pe7 = new Pessoa("João Miguel", "blabla.mail.com");
+        Pessoa pe8 = new Pessoa("João António", "blabla.mail.com");
+        Pessoa pe9 = new Pessoa("João Zé", "blabla.mail.com");
+        Pessoa pe10 = new Pessoa("Zé João", "blabla.mail.com");
+
+        CISUC.pessoas.add(pe1);
+        CISUC.pessoas.add(pe2);
+        CISUC.pessoas.add(pe3);
+        CISUC.pessoas.add(pe4);
+        CISUC.pessoas.add(pe5);
+        CISUC.pessoas.add(pe6);
+        CISUC.pessoas.add(pe7);
+        CISUC.pessoas.add(pe8);
+        CISUC.pessoas.add(pe9);
+        CISUC.pessoas.add(pe10);
     }
 }
