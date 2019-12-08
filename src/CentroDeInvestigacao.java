@@ -5,6 +5,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 public class CentroDeInvestigacao {
     protected JList listaProjetos, listaPessoas;
@@ -12,7 +15,7 @@ public class CentroDeInvestigacao {
     protected static ArrayList<Projeto> projetos = new ArrayList<Projeto>();
     protected static ArrayList<Pessoa> pessoas = new ArrayList<Pessoa>();
 
-    protected JFrame frameProjetos,frameProjetosConc,frameOriginal,framePessoas,frameAdd;
+    protected JFrame frameProjetos,frameOriginal,framePessoas,frameAdd;
     protected JList listaSelecionados;
 
     public CentroDeInvestigacao(String nome) {
@@ -138,9 +141,9 @@ public class CentroDeInvestigacao {
                     frameProjetos.setVisible(true);
                 } else if (quantosSelecionados(valoresDaLista) == 1) {
                     Projeto projetoDesejado = procuraProjetoNoCentro(valoresDaLista,projetos);
-                    if(projetoDesejado==null) {
+                    if(projetoDesejado!=null) {
                         System.out.println(projetoDesejado.nome);
-                        //DisplayProjeto();
+                        projetoDesejado.DisplayProjeto(frameProjetos);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
@@ -290,9 +293,9 @@ public class CentroDeInvestigacao {
             panel = new JPanel();
             panel.setLayout(new GridLayout(5,1));
 
-            labelNome = new JLabel("Nome");
-            labelAcro = new JLabel("Acrónimo");
-            labelDataIn = new JLabel("Data de Inicio (dd mm aaaa)");
+            labelNome = new JLabel("Nome (max: 15 caracteres)");
+            labelAcro = new JLabel("Acrónimo (max: 5 caracteres)");
+            labelDataIn = new JLabel("Data de Inicio (dd/mm/aaaa)");
             labelDuracao = new JLabel("Duração Estimada (em meses)");
 
             fieldNome = new JTextField(20);
@@ -318,21 +321,100 @@ public class CentroDeInvestigacao {
             panel.add(ok);
             panel.add(voltar);
 
+            fieldNome.setDocument(new JTextFieldLimit(15));
+            fieldAcro.setDocument(new JTextFieldLimit(5));
+            fieldDataIn.setDocument(new JTextFieldLimit(10));
+            fieldDuracao.setDocument(new JTextFieldLimit(2));
+
             frameAdd.add(panel);
             frameAdd.setVisible(true);
         }
-    }
-    private class AdicionaProjListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String cmd = e.getActionCommand();
-            if (cmd.equals("OK")) {
-                frameAdd.dispose();
-                frameOriginal.setVisible(true);
+        private class AdicionaProjListener implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String cmd = e.getActionCommand();
+                if (cmd.equals("OK")) {
+                    try{
+                        int duracaoOut;
+                        String[] data;
+                        int testdia, testmes, testano;
 
-            } else if (cmd.equals("VOLTAR")) {
-                frameAdd.dispose();
-                frameOriginal.setVisible(true);
+                        String nomeInput = fieldNome.getText();
+                        String acronimoInput = fieldAcro.getText();
+                        String dataInInput = fieldDataIn.getText();
+                        String duracaoInput = fieldDuracao.getText();
+
+                        duracaoOut=Integer.parseInt(duracaoInput);
+
+                        if(verificaData(dataInInput) ==1){
+                            data = dataInInput.split("/");
+                            testdia = Integer.parseInt(data[0]);
+                            testmes = Integer.parseInt(data[1]);
+                            testano = Integer.parseInt(data[2]);
+                            Projeto p11=new Projeto(nomeInput,acronimoInput,testdia,testmes,testano,duracaoOut);
+                            projetos.add(p11);
+                            JOptionPane.showMessageDialog(null, "Projeto criado e adicionado com sucesso!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null, "Por favor preencha todos os campos de forma correta.", "Inválido", JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    }catch (NumberFormatException ex){
+                        JOptionPane.showMessageDialog(null, "Por favor preencha todos os campos de forma correta.", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    }
+                    frameAdd.setVisible(false);
+                    frameOriginal.setVisible(true);
+
+                } else if (cmd.equals("VOLTAR")) {
+                    frameAdd.dispose();
+                    frameOriginal.setVisible(true);
+                }
+            }
+            public int verificaData(String dataInInput) {
+                String[] data;
+                int testdia, testmes, testano;
+                int counter=0;
+                data = dataInInput.split("/");
+                testdia = Integer.parseInt(data[0]);
+                testmes = Integer.parseInt(data[1]);
+                testano = Integer.parseInt(data[2]);
+
+                for (int i=0;i<dataInInput.length();i++){
+                    Character c1 = dataInInput.charAt(i);
+                    Character c2 = '/';
+                    if (c1.equals(c2)){
+                        counter++;
+                    }
+                }
+
+                if (counter!=2)
+                    return 0;
+                if (testmes>12)
+                    return 0;
+                if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31))
+                    return 0;
+                if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30))
+                    return 0;
+                if ((testmes==2) && (testdia>28))
+                    return 0;
+
+                return 1;
+            }
+        }
+    }
+    public class JTextFieldLimit extends PlainDocument {
+        private int limit;
+
+        JTextFieldLimit(int limit) {
+            super();
+            this.limit = limit;
+        }
+
+        public void insertString( int offset, String  str, AttributeSet attr ) throws BadLocationException {
+            if (str == null) return;
+
+            if ((getLength() + str.length()) <= limit) {
+                super.insertString(offset, str, attr);
             }
         }
     }
