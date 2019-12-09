@@ -33,16 +33,6 @@ public class CentroDeInvestigacao {
         new ListaProjetos(this.projetos);
     }
 
-    public void AdicionarProjeto(JFrame frame){
-        this.frameOriginal = frame;
-        new AdicionaProjeto();
-    }
-
-    public void ListarPessoas(JFrame frame){
-        this.frameOriginal = frame;
-        new ListaPessoas(this.pessoas);
-    }
-
     public void ListarProjetosNConcluidosATempo(JFrame frame) {
         ArrayList<Projeto> projetosNConcATempo = new ArrayList<Projeto>();
         this.frameOriginal=frame;
@@ -173,6 +163,11 @@ public class CentroDeInvestigacao {
     }
 
 
+    public void ListarPessoas(JFrame frame){
+        this.frameOriginal = frame;
+        new ListaPessoas(this.pessoas);
+    }
+
     public class ListaPessoas extends JFrame{
         protected JLabel label;
         protected JPanel panel;
@@ -227,14 +222,12 @@ public class CentroDeInvestigacao {
             if (cmd.equals("OK")) {
                 framePessoas.setVisible(false);
                 valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
-                System.out.println(valoresDaLista);
                 if (valoresDaLista.isEmpty() == true) {
                     JOptionPane.showMessageDialog(null, "Tem de selecionar uma pessoa!", "WARNING", JOptionPane.ERROR_MESSAGE);
                     framePessoas.setVisible(true);
                 } else if (quantosSelecionados(valoresDaLista) == 1) {
                     Pessoa pessoaDesejada = procuraPessoaNoCentro(valoresDaLista,pessoas);
                     if(pessoaDesejada!=null) {
-                        System.out.println(pessoaDesejada.nome);
                         pessoaDesejada.DisplayPessoa(framePessoas);
                     }
                 } else {
@@ -268,6 +261,12 @@ public class CentroDeInvestigacao {
             }
             return alvo;
         }
+    }
+
+
+    public void AdicionarProjeto(JFrame frame){
+        this.frameOriginal = frame;
+        new AdicionaProjeto();
     }
 
     public class AdicionaProjeto extends JFrame{
@@ -405,6 +404,7 @@ public class CentroDeInvestigacao {
             }
         }
     }
+
     public class JTextFieldLimit extends PlainDocument {
         private int limit;
 
@@ -421,6 +421,7 @@ public class CentroDeInvestigacao {
             }
         }
     }
+
     public Data dataDeHoje(){
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
         String[] datastr = timeStamp.split("/");

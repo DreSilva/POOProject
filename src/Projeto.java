@@ -132,6 +132,7 @@ public class Projeto {
 
             }else if (cmd.equals("TERMINAPROJ")){
                 terminarProjeto(frameDisplay);
+                frameProjetos.setVisible(true);
 
             } else if (cmd.equals("VOLTAR")) {
                 frameDisplay.dispose();
@@ -197,48 +198,6 @@ public class Projeto {
         }
     }
 
-
-    /*public static void novaTarefa(int diaIn, int mesIn, int anoIn, int duracao, int percentagemConc ){
-        Tarefa t1 = new Tarefa(2,12,2019, 3,0);
-    }*/
-
-    /**
-     * Construtor do projeto
-     * @param nome nome do projeto
-     * @param acronimo acronimo do projeto
-     * @param diaIn dia de inicio do projeto
-     * @param mesIn
-     * @param anoIn
-     * @param duracao
-     */
-    public Projeto(String nome, String acronimo, int diaIn, int mesIn, int anoIn, int duracao) {
-        this.nome = nome;
-        this.acronimo = acronimo;
-        this.dataInicio = new Data(diaIn, mesIn, anoIn);
-        this.duracao = duracao;
-        this.dataDeFim = new Data(0, 0, 0);
-    }
-
-    public String formatLabelNome(String nome) {
-        String nomeS = "Nome: ";
-        return nomeS + nome;
-    }
-    public String formatLabelAcro(String acro) {
-        String acroS = "Acrónimo: ";
-        return acroS + acro;
-    }
-    public String formatLabelDataDeIni(Data data) {
-        String dataDeIniS = "Data de Início: ";
-        return dataDeIniS + data.getDia() + "/" + data.getMês() + "/" + data.getAno();
-    }
-    public String formatLabelDuracao(int duracao) {
-        String duracaoS = "Duração (meses): ";
-        return duracaoS + duracao;
-    }
-    public String formatLabelDataDeFim(Data data) {
-        String dataDeFim = "Data de Fim: ";
-        return dataDeFim + data.getDia() + "/" + data.getMês() + "/" + data.getAno();
-    }
 
     public void criarTarefa(JFrame frame){
         this.frameDisplay = frame;
@@ -381,7 +340,6 @@ public class Projeto {
             }
         }
     }
-
 
     public void listarTarefasNaoIniciadas(JFrame frame) {
         ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
@@ -599,6 +557,7 @@ public class Projeto {
             return alvo;
         }
     }
+
     public void terminarProjeto(JFrame frame) {
         int contaTar=0;
         int conta100=0;
@@ -615,17 +574,58 @@ public class Projeto {
             this.dataDeFim.setDia(Integer.parseInt(dataFim[0]));
             this.dataDeFim.setMês(Integer.parseInt(dataFim[1]));
             this.dataDeFim.setAno(Integer.parseInt(dataFim[2]));
+            frameDisplay.setVisible(false);
         }
         else{
             JOptionPane.showMessageDialog(null, "Não pode terminar o projeto pois há tarefas qua ainda não foram concluidas!", "Inválido", JOptionPane.ERROR_MESSAGE);
             frameDisplay.setVisible(true);
         }
     }
+
     public void novaPessoa(JFrame frame){
         /*String value = JOptionPane.showInputDialog(null, "Introduza o nome da pessoa", "Adicionar Projeto", JOptionPane.QUESTION_MESSAGE);
         for (Pessoa i: pessoas)*/
     }
+
     public void custoProjeto(JFrame frame){
 
+    }
+
+    public String formatLabelNome(String nome) {
+        String nomeS = "Nome: ";
+        return nomeS + nome;
+    }
+    public String formatLabelAcro(String acro) {
+        String acroS = "Acrónimo: ";
+        return acroS + acro;
+    }
+    public String formatLabelDataDeIni(Data data) {
+        String dataDeIniS = "Data de Início: ";
+        return dataDeIniS + data.getDia() + "/" + data.getMês() + "/" + data.getAno();
+    }
+    public String formatLabelDuracao(int duracao) {
+        String duracaoS = "Duração (meses): ";
+        return duracaoS + duracao;
+    }
+    public String formatLabelDataDeFim(Data data) {
+        String dataDeFim = "Data de Fim: ";
+        return dataDeFim + data.getDia() + "/" + data.getMês() + "/" + data.getAno();
+    }
+
+    /**
+     * Construtor do projeto
+     * @param nome nome do projeto
+     * @param acronimo acronimo do projeto
+     * @param diaIn dia de inicio do projeto
+     * @param mesIn mes de inicio do projeto
+     * @param anoIn ano de inicio do projeto
+     * @param duracao duração do projeto
+     */
+    public Projeto(String nome, String acronimo, int diaIn, int mesIn, int anoIn, int duracao) {
+        this.nome = nome;
+        this.acronimo = acronimo;
+        this.dataInicio = new Data(diaIn, mesIn, anoIn);
+        this.duracao = duracao;
+        this.dataDeFim = new Data(0, 0, 0);
     }
 }

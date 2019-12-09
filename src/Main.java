@@ -100,16 +100,16 @@ public class Main{
         }
     }
     public void novoProjeto(CentroDeInvestigacao CISUC) {
-        Projeto p1 = new Projeto("Projeto POO", "PPOO", 28, 11, 2019, 1);
-        Projeto p2 = new Projeto("Projeto IRC", "PIRC", 25, 11, 2019, 2);
-        Projeto p3 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
-        Projeto p4 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
-        Projeto p5 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
-        Projeto p6 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
-        Projeto p7 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
-        Projeto p8 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
-        Projeto p9 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
-        Projeto p10 = new Projeto("Projeto TI", "PTI", 23, 11, 2019, 3);
+        Projeto p1 = new Projeto("Projeto 1", "P1", 28, 11, 2019, 1);
+        Projeto p2 = new Projeto("Projeto 2", "P2", 25, 11, 2019, 2);
+        Projeto p3 = new Projeto("Projeto 3", "P3", 23, 11, 2019, 3);
+        Projeto p4 = new Projeto("Projeto 4", "P4", 23, 11, 2019, 3);
+        Projeto p5 = new Projeto("Projeto 5", "P5", 23, 11, 2019, 3);
+        Projeto p6 = new Projeto("Projeto 6", "P6", 23, 11, 2019, 3);
+        Projeto p7 = new Projeto("Projeto 7", "P7", 23, 11, 2019, 3);
+        Projeto p8 = new Projeto("Projeto 8", "P8", 23, 11, 2019, 3);
+        Projeto p9 = new Projeto("Projeto 9", "P9", 23, 11, 2019, 3);
+        Projeto p10 = new Projeto("Projeto 10", "P10", 23, 11, 2019, 3);
 
         CISUC.projetos.add(p1);
         CISUC.projetos.add(p2);

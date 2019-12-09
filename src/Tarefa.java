@@ -20,6 +20,14 @@ public class Tarefa {
 
     }*/
 
+    /**
+     * Construtor das tarefas
+     * @param diaIn dia de inicio da tarefa
+     * @param mesIn mes de inicio da tarefa
+     * @param anoIn ano de inicio da tarefa
+     * @param duracao duracao da tarefa
+     * @param percentagemConc percentagem de conclusão da tarefa
+     */
     public Tarefa(int diaIn, int mesIn, int anoIn, double duracao, int percentagemConc){
         this.dataInicio = new Data(diaIn, mesIn, anoIn);
         this.duracao = duracao;

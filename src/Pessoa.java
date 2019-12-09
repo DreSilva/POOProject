@@ -63,16 +63,17 @@ public class Pessoa {
                 }
                 else if (cmd.equals("LISTARPROJPESSOA")) {
 
-                    framePessoas.setVisible(true);
+                    //framePessoas.setVisible(true);
                 }
                 else if (cmd.equals("LISTARTAREFASPESSOA")) {
 
-                    framePessoas.setVisible(true);
+                    //framePessoas.setVisible(true);
                 }
 
             }
         }
     }
+
     public String formatLabelNome(String nome) {
         String nomeS = "Nome: ";
         return nomeS + nome;
@@ -82,6 +83,11 @@ public class Pessoa {
         return mailS + email;
     }
 
+    /**
+     * Construtor da pessoa
+     * @param nome nome da pessoa
+     * @param email email da pessoa
+     */
     public Pessoa(String nome, String email) {
         this.nome = nome;
         this.email = email;

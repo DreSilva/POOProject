@@ -1,6 +1,12 @@
 public class Data {
     private int dia, mês, ano;
 
+    /**
+     * Construtor da data
+     * @param dia dia
+     * @param mês mês
+     * @param ano ano
+     */
     public Data(int dia, int mês, int ano) {
         this.ano = ano;
         this.dia = dia;
