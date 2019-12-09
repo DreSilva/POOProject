@@ -75,12 +75,6 @@ public class CentroDeInvestigacao {
         new ListaProjetos(projetosConc);
     }
 
-    /*public void ListarPessoasDoProjeto(JFrame frame) {
-        this.frameOriginal = frame;
-        novoProjeto(this.projetos);
-        new ListaProjetos(this.projetos);
-    }*/
-
     public class ListaProjetos extends JFrame {
         protected JLabel label;
         protected JPanel panel;

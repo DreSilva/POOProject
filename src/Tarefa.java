@@ -1,3 +1,5 @@
+import org.w3c.dom.ls.LSOutput;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,15 +13,6 @@ public class Tarefa {
     protected Data dataInicio, dataDeFim;
     protected int duracao, percentagemConc;
     protected JFrame frameDisplay,frameTarefas;
-
-    public void ListarTarefas(JFrame frame){
-        this.frameDisplay=frame;
-        new ListaTarefas();
-    }
-
-    public class ListaTarefas extends JFrame{
-
-    }
 
     /*public static void atualizarTarefas(String nome, String email, int diaFim, int mesFim, int anoFim, int percentagemConc){
 
