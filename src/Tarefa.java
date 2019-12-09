@@ -11,14 +11,16 @@ import java.util.ArrayList;
 
 public class Tarefa {
     protected Data dataInicio, dataDeFim;
-    protected int duracao, percentagemConc;
+    protected int percentagemConc;
+    protected double duracao;
     protected JFrame frameDisplay,frameTarefas;
+    protected Pessoa pessoaReponsavel;
 
     /*public static void atualizarTarefas(String nome, String email, int diaFim, int mesFim, int anoFim, int percentagemConc){
 
     }*/
 
-    public Tarefa(int diaIn, int mesIn, int anoIn, int duracao, int percentagemConc){
+    public Tarefa(int diaIn, int mesIn, int anoIn, double duracao, int percentagemConc){
         this.dataInicio = new Data(diaIn, mesIn, anoIn);
         this.duracao = duracao;
         this.percentagemConc= percentagemConc;

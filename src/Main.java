@@ -2,7 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Main{
     protected NossaFrame frameCentros;
@@ -34,7 +35,7 @@ public class Main{
             }
             else if (cmd.equals("Listar Projetos")) {
                 frameCentros.setVisible(false);
-                CISUC.ListarProjetos(frameCentros);
+                CISUC.ListarProjetosDoCentro(frameCentros);
                 //CISUC.ListarPessoasDoProjeto(frameCentros);
                 //frameCentros.setVisible(true);
             }
@@ -144,5 +145,12 @@ public class Main{
         CISUC.pessoas.add(pe8);
         CISUC.pessoas.add(pe9);
         CISUC.pessoas.add(pe10);
+    }
+
+    public Data dataDeHoje(){
+        String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
+        String[] datastr = timeStamp.split("/");
+        Data data=new Data(Integer.parseInt(datastr[0]),Integer.parseInt(datastr[1]),Integer.parseInt(datastr[2]));
+        return data;
     }
 }

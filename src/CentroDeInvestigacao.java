@@ -1,10 +1,12 @@
 import com.sun.tools.javac.Main;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -26,7 +28,7 @@ public class CentroDeInvestigacao {
         return nome;
     }
 
-    public void ListarProjetos(JFrame frame) {
+    public void ListarProjetosDoCentro(JFrame frame) {
         this.frameOriginal = frame;
         new ListaProjetos(this.projetos);
     }
@@ -127,26 +129,24 @@ public class CentroDeInvestigacao {
             String valoresDaLista;
             String cmd = e.getActionCommand();
             if (cmd.equals("OK")) {
-                frameProjetos.setVisible(false);
-                valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
-                System.out.println(valoresDaLista);
-                if (valoresDaLista.isEmpty() == true) {
-                    JOptionPane.showMessageDialog(null, "Tem de selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
-                    frameProjetos.setVisible(true);
-                } else if (quantosSelecionados(valoresDaLista) == 1) {
-                    Projeto projetoDesejado = procuraProjetoNoCentro(valoresDaLista,projetos);
-                    if(projetoDesejado!=null) {
-                        System.out.println(projetoDesejado.nome);
-                        projetoDesejado.DisplayProjeto(frameProjetos);
+                    frameProjetos.setVisible(false);
+                    valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
+                    if (valoresDaLista.isEmpty() == true) {
+                        JOptionPane.showMessageDialog(null, "Tem de selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                        frameProjetos.setVisible(true);
+                    } else if (quantosSelecionados(valoresDaLista) == 1) {
+                        Projeto projetoDesejado = procuraProjetoNoCentro(valoresDaLista,projetos);
+                        if(projetoDesejado!=null) {
+                            projetoDesejado.DisplayProjeto(frameProjetos);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                        frameProjetos.setVisible(true);
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
-                    frameProjetos.setVisible(true);
-                }
-                //DisplayProjeto();
-            } else if (cmd.equals("VOLTAR")){
-                frameProjetos.dispose();
-                frameOriginal.setVisible(true);
+                    //DisplayProjeto();
+                } else if (cmd.equals("VOLTAR")){
+                    frameProjetos.dispose();
+                    frameOriginal.setVisible(true);
             }
         }
 
@@ -233,9 +233,9 @@ public class CentroDeInvestigacao {
                     framePessoas.setVisible(true);
                 } else if (quantosSelecionados(valoresDaLista) == 1) {
                     Pessoa pessoaDesejada = procuraPessoaNoCentro(valoresDaLista,pessoas);
-                    if(pessoaDesejada==null) {
+                    if(pessoaDesejada!=null) {
                         System.out.println(pessoaDesejada.nome);
-                        //DisplayProjeto();
+                        pessoaDesejada.DisplayPessoa(framePessoas);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Só pode selecionar uma pessoa!", "WARNING", JOptionPane.ERROR_MESSAGE);
@@ -348,9 +348,10 @@ public class CentroDeInvestigacao {
                             Projeto p11=new Projeto(nomeInput,acronimoInput,testdia,testmes,testano,duracaoOut);
                             projetos.add(p11);
                             JOptionPane.showMessageDialog(null, "Projeto criado e adicionado com sucesso!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
-                        }
-                        else{
-                            JOptionPane.showMessageDialog(null, "Por favor preencha todos os campos de forma correta.", "Inválido", JOptionPane.ERROR_MESSAGE);
+                        }else if (verificaData(dataInInput) ==0){
+                            JOptionPane.showMessageDialog(null, "Data Inválida!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                        }else if (verificaData(dataInInput) ==2){
+                            JOptionPane.showMessageDialog(null, "Insira uma data futura!", "Inválido", JOptionPane.ERROR_MESSAGE);
                         }
 
                     }catch (NumberFormatException ex){
@@ -366,6 +367,7 @@ public class CentroDeInvestigacao {
             }
             public int verificaData(String dataInInput) {
                 String[] data;
+                Data dataDeHoje=dataDeHoje();
                 int testdia, testmes, testano;
                 int counter=0;
                 data = dataInInput.split("/");
@@ -383,14 +385,21 @@ public class CentroDeInvestigacao {
 
                 if (counter!=2)
                     return 0;
-                if (testmes>12)
+                else if (testmes>12)
                     return 0;
-                if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31))
+                else if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31))
                     return 0;
-                if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30))
+                else if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30))
                     return 0;
-                if ((testmes==2) && (testdia>28))
+                else if ((testmes==2) && (testdia>28))
                     return 0;
+
+                if ((dataDeHoje.getAno()==testano) && (dataDeHoje.getMês()==testmes) && (dataDeHoje.getDia()>testdia))
+                    return 2;
+                else if ((dataDeHoje.getAno()==testano) && (dataDeHoje.getMês()>testmes))
+                    return 2;
+                else if (dataDeHoje.getAno()>testano)
+                    return 2;
 
                 return 1;
             }
@@ -411,6 +420,12 @@ public class CentroDeInvestigacao {
                 super.insertString(offset, str, attr);
             }
         }
+    }
+    public Data dataDeHoje(){
+        String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
+        String[] datastr = timeStamp.split("/");
+        Data data=new Data(Integer.parseInt(datastr[0]),Integer.parseInt(datastr[1]),Integer.parseInt(datastr[2]));
+        return data;
     }
 }
 
