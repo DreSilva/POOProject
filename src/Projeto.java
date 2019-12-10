@@ -1,3 +1,4 @@
+import javax.print.DocFlavor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,7 +7,9 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.beans.PropertyEditorSupport;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Projeto {
     protected String nome, acronimo;
@@ -17,7 +20,7 @@ public class Projeto {
     protected static ArrayList<Tarefa> tarefas = new ArrayList<Tarefa>();
     protected static ArrayList<Docentes> docentes = new ArrayList<Docentes>();
     protected static ArrayList<Bolseiros> bolseiros = new ArrayList<Bolseiros>();
-    protected Docentes investigadorPrincipal;
+    protected Pessoa investigadorPrincipal;
     protected JList listaSelecionados;
 
 
@@ -181,6 +184,10 @@ public class Projeto {
             panel.add(labelDataFim);
             panel.add(listarPessoas);
             panel.add(listarTarefas);
+            panel.add(voltar);
+
+            frameProjetosConc.add(panel);
+            frameProjetosConc.setVisible(true);
         }
     }
     private class ProjetoConcListener implements ActionListener {
@@ -193,7 +200,7 @@ public class Projeto {
             } else if (cmd.equals("LISTARTAREFAS")) {
                 listarTarefas(frameProjetosConc);
             } else if (cmd.equals("LISTARPESSOAS")) {
-                //listarPessoas(frameProjetosConc);
+                listarPessoas(frameProjetosConc);
             }
         }
     }
@@ -485,7 +492,7 @@ public class Projeto {
 
             DefaultListModel listPessoas = new DefaultListModel();
             if (investigadorPrincipal!=null)
-                listPessoas.addElement(investigadorPrincipal + " <investigador principal>");
+                listPessoas.addElement(investigadorPrincipal.nome + " <investigador principal>");
             for (Docentes i : docentes)
                 listPessoas.addElement(i.nome + " <docente>");
             for (Bolseiros i : bolseiros)
@@ -569,12 +576,36 @@ public class Projeto {
         }
         if (contaTar==conta100){
             String value = JOptionPane.showInputDialog(null, "Introduza a data de fim do Projeto", "Terminar Projeto", JOptionPane.QUESTION_MESSAGE);
-            JOptionPane.showMessageDialog(null, "Projeto terminado com sucesso!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
-            String[] dataFim = value.split("/");
-            this.dataDeFim.setDia(Integer.parseInt(dataFim[0]));
-            this.dataDeFim.setMês(Integer.parseInt(dataFim[1]));
-            this.dataDeFim.setAno(Integer.parseInt(dataFim[2]));
-            frameDisplay.setVisible(false);
+
+            if (value==null){
+                frameDisplay.dispose();
+                frameProjetos.setVisible(true);
+            }
+            else if (value.length()==0){
+                JOptionPane.showMessageDialog(null, "Tem que inserir uma data", "Inválido", JOptionPane.ERROR_MESSAGE);
+                frameDisplay.setVisible(false);
+            }
+
+            else if (value.length()>0) {
+                if (verificaData(value)==0) {
+                    JOptionPane.showMessageDialog(null, "Data Inválida!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameDisplay.dispose();
+                    frameProjetos.setVisible(true);
+                }
+                else if (verificaData(value)==2) {
+                    JOptionPane.showMessageDialog(null, "Insira uma data futura!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameDisplay.dispose();
+                    frameProjetos.setVisible(true);
+                }else if (verificaData(value) ==1) {
+                    String[] dataFim = value.split("/");
+                    this.dataDeFim.setDia(Integer.parseInt(dataFim[0]));
+                    this.dataDeFim.setMês(Integer.parseInt(dataFim[1]));
+                    this.dataDeFim.setAno(Integer.parseInt(dataFim[2]));
+                    frameDisplay.setVisible(false);
+                    JOptionPane.showMessageDialog(null, "Projeto terminado com sucesso!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
+                    frameProjetos.setVisible(true);
+                }
+            }
         }
         else{
             JOptionPane.showMessageDialog(null, "Não pode terminar o projeto pois há tarefas qua ainda não foram concluidas!", "Inválido", JOptionPane.ERROR_MESSAGE);
@@ -583,12 +614,88 @@ public class Projeto {
     }
 
     public void novaPessoa(JFrame frame){
-        /*String value = JOptionPane.showInputDialog(null, "Introduza o nome da pessoa", "Adicionar Projeto", JOptionPane.QUESTION_MESSAGE);
-        for (Pessoa i: pessoas)*/
+        int flag=0;
+        String value = JOptionPane.showInputDialog(null, "Introduza o nome da pessoa", "Adicionar pessoa ao Projeto", JOptionPane.QUESTION_MESSAGE);
+        for (Pessoa i: CentroDeInvestigacao.pessoas){
+            if (i.nome.equals(value))
+                flag=1;
+        }
+        if (flag==1){
+            System.out.println("gay");
+            if (investigadorPrincipal.nome.equals(value))
+                JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Investigador Principal!", "Inválido", JOptionPane.ERROR_MESSAGE);
+            for (Docentes i: docentes){
+                if (i.nome.equals(value))
+                    JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Docente!", "Inválido", JOptionPane.ERROR_MESSAGE);
+            }
+            for (Bolseiros j: bolseiros){
+                if (j.nome.equals(value))
+                    JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Bolseiro!", "Inválido", JOptionPane.ERROR_MESSAGE);
+
+            }
+            ***ADICIONAR PESSOA AO PROJETO***
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Tem que inserir uma pessoa do centro!", "Inválido", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void custoProjeto(JFrame frame){
+        double duracaoEscolhida;
+        double custoProj=0;
+        for (Tarefa i : tarefas){
+            if (i.percentagemConc==100)
+                duracaoEscolhida=calculaDifData(i.dataInicio,i.dataDeFim);
+            else
+                duracaoEscolhida=i.duracao;
+            custoProj+=duracaoEscolhida*i.pessoaReponsavel.custo();
+        }
+        JOptionPane.showMessageDialog(null, custoProj+" €", "Custo do Projeto", JOptionPane.PLAIN_MESSAGE);
+    }
 
+    private double calculaDifData(Data dataInicio, Data dataDeFim) {
+        double dataDif;
+        int dia1=dataInicio.getDia(), mes1=dataInicio.getMês(), ano1=dataInicio.getAno(), dia2=dataDeFim.getDia(), mes2=dataDeFim.getMês(), ano2=dataDeFim.getAno();
+        int difdias, difmeses, difanos;
+        if(dia2 < dia1)
+        {
+            // meses de fevereiro
+            if (mes2 == 3)
+            {
+                //  verifica se é ano bisseixto
+                if ((ano2 % 4 == 0 && ano2 % 100 != 0) || (ano2 % 400 == 0))
+                {
+                    dia2 += 29;
+                }
+                else
+                {
+                    dia2 += 28;
+                }
+            }
+            // Abril ou Junho ou Setembro ou Novembro
+            else if (mes2 == 5 || mes2 == 7 || mes2 == 10 || mes2 == 12)
+            {
+                dia2 += 30;
+            }
+            // Janeiro ou Março ou Maio ou Julho ou Agosto ou Outubro ou Dezembro
+            else
+            {
+                dia2 += 31;
+            }
+            mes2 = mes2 - 1;
+        }
+        if (mes2 < mes1)
+        {
+            mes2 += 12;
+            ano2 -= 1;
+        }
+        difdias = dia2 - dia1;
+        difmeses = mes2 - mes1;
+        difanos = ano2 - ano1;
+
+        //custoFinal=((difdias*31/custoPorMes)*custoPorMes)+(difmeses*custoPorMes)+(difanos*12*custoPorMes);
+        dataDif=difdias/30+difmeses+(difanos*12);
+        return dataDif;
     }
 
     public String formatLabelNome(String nome) {
@@ -610,6 +717,53 @@ public class Projeto {
     public String formatLabelDataDeFim(Data data) {
         String dataDeFim = "Data de Fim: ";
         return dataDeFim + data.getDia() + "/" + data.getMês() + "/" + data.getAno();
+    }
+
+    public int verificaData(String dataInInput) {
+        String[] data;
+        Data dataDeHoje=dataDeHoje();
+        int testdia, testmes, testano;
+        int counter=0;
+
+        for (int i=0;i<dataInInput.length();i++){
+            Character c1 = dataInInput.charAt(i);
+            Character c2 = '/';
+            if (c1.equals(c2)){
+                counter++;
+            }
+        }
+        if (counter!=2)
+            return 0;
+
+        data = dataInInput.split("/");
+        testdia = Integer.parseInt(data[0]);
+        testmes = Integer.parseInt(data[1]);
+        testano = Integer.parseInt(data[2]);
+
+
+        if (testmes>12)
+            return 0;
+        else if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31))
+            return 0;
+        else if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30))
+            return 0;
+        else if ((testmes==2) && (testdia>28))
+            return 0;
+
+        if ((dataDeHoje.getAno()==testano) && (dataDeHoje.getMês()==testmes) && (dataDeHoje.getDia()>testdia))
+            return 2;
+        else if ((dataDeHoje.getAno()==testano) && (dataDeHoje.getMês()>testmes))
+            return 2;
+        else if (dataDeHoje.getAno()>testano)
+            return 2;
+
+        return 1;
+    }
+    public Data dataDeHoje(){
+        String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
+        String[] datastr = timeStamp.split("/");
+        Data data=new Data(Integer.parseInt(datastr[0]),Integer.parseInt(datastr[1]),Integer.parseInt(datastr[2]));
+        return data;
     }
 
     /**

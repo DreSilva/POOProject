@@ -271,8 +271,8 @@ public class CentroDeInvestigacao {
 
     public class AdicionaProjeto extends JFrame{
         protected JPanel panel;
-        protected JLabel labelNome, labelAcro, labelDataIn, labelDuracao;
-        protected JTextField fieldNome, fieldAcro, fieldDataIn, fieldDuracao;
+        protected JLabel labelNome, labelAcro, labelDataIn, labelDuracao, labelInvPr;
+        protected JTextField fieldNome, fieldAcro, fieldDataIn, fieldDuracao, fieldInvPr;
         protected JButton ok, voltar;
 
         public AdicionaProjeto(){
@@ -284,17 +284,19 @@ public class CentroDeInvestigacao {
             frameAdd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             panel = new JPanel();
-            panel.setLayout(new GridLayout(5,1));
+            panel.setLayout(new GridLayout(6,1));
 
-            labelNome = new JLabel("Nome (max: 15 caracteres)");
-            labelAcro = new JLabel("Acrónimo (max: 5 caracteres)");
-            labelDataIn = new JLabel("Data de Inicio (dd/mm/aaaa)");
-            labelDuracao = new JLabel("Duração Estimada (em meses)");
+            labelNome = new JLabel("Nome (max: 15 caracteres):");
+            labelAcro = new JLabel("Acrónimo (max: 5 caracteres):");
+            labelDataIn = new JLabel("Data de Inicio (dd/mm/aaaa):");
+            labelDuracao = new JLabel("Duração Estimada (em meses):");
+            labelInvPr = new JLabel("Investigador Principal:");
 
             fieldNome = new JTextField(20);
             fieldAcro = new JTextField(5);
             fieldDataIn = new JTextField(10);
             fieldDuracao = new JTextField(2);
+            fieldInvPr = new JTextField(25);
 
             ok = new JButton("OK");
             ok.setActionCommand("OK");
@@ -311,6 +313,8 @@ public class CentroDeInvestigacao {
             panel.add(fieldDataIn);
             panel.add(labelDuracao);
             panel.add(fieldDuracao);
+            panel.add(labelInvPr);
+            panel.add(fieldInvPr);
             panel.add(ok);
             panel.add(voltar);
 
@@ -318,6 +322,7 @@ public class CentroDeInvestigacao {
             fieldAcro.setDocument(new JTextFieldLimit(5));
             fieldDataIn.setDocument(new JTextFieldLimit(10));
             fieldDuracao.setDocument(new JTextFieldLimit(2));
+            fieldInvPr.setDocument(new JTextFieldLimit(25));
 
             frameAdd.add(panel);
             frameAdd.setVisible(true);
@@ -331,26 +336,43 @@ public class CentroDeInvestigacao {
                         int duracaoOut;
                         String[] data;
                         int testdia, testmes, testano;
+                        Pessoa pessoaDesejada=null;
 
                         String nomeInput = fieldNome.getText();
                         String acronimoInput = fieldAcro.getText();
                         String dataInInput = fieldDataIn.getText();
                         String duracaoInput = fieldDuracao.getText();
+                        String invPriInput = fieldInvPr.getText();
+
+                        for(Pessoa i :pessoas){
+                            if (i.nome.equals(invPriInput))
+                                pessoaDesejada=i;
+                        }
 
                         duracaoOut=Integer.parseInt(duracaoInput);
 
-                        if(verificaData(dataInInput) ==1){
+                        if (verificaData(dataInInput) ==0){
+                            JOptionPane.showMessageDialog(null, "Data Inválida!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else if (verificaData(dataInInput) ==2){
+                            JOptionPane.showMessageDialog(null, "Insira uma data futura!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else if (pessoaDesejada==null){
+                            JOptionPane.showMessageDialog(null, "Tem que inserir uma pessoa que esteja no centro!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else if (pessoaDesejada.isDocente()!=1){
+                            JOptionPane.showMessageDialog(null, "O Investigador Principal tem de ser um Docente!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                        }
+
+                        else if((verificaData(dataInInput) ==1) && (pessoaDesejada!=null) && (pessoaDesejada.isDocente()==1)){
                             data = dataInInput.split("/");
                             testdia = Integer.parseInt(data[0]);
                             testmes = Integer.parseInt(data[1]);
                             testano = Integer.parseInt(data[2]);
                             Projeto p11=new Projeto(nomeInput,acronimoInput,testdia,testmes,testano,duracaoOut);
                             projetos.add(p11);
+                            p11.investigadorPrincipal=pessoaDesejada;
                             JOptionPane.showMessageDialog(null, "Projeto criado e adicionado com sucesso!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
-                        }else if (verificaData(dataInInput) ==0){
-                            JOptionPane.showMessageDialog(null, "Data Inválida!", "Inválido", JOptionPane.ERROR_MESSAGE);
-                        }else if (verificaData(dataInInput) ==2){
-                            JOptionPane.showMessageDialog(null, "Insira uma data futura!", "Inválido", JOptionPane.ERROR_MESSAGE);
                         }
 
                     }catch (NumberFormatException ex){
@@ -369,10 +391,6 @@ public class CentroDeInvestigacao {
                 Data dataDeHoje=dataDeHoje();
                 int testdia, testmes, testano;
                 int counter=0;
-                data = dataInInput.split("/");
-                testdia = Integer.parseInt(data[0]);
-                testmes = Integer.parseInt(data[1]);
-                testano = Integer.parseInt(data[2]);
 
                 for (int i=0;i<dataInInput.length();i++){
                     Character c1 = dataInInput.charAt(i);
@@ -384,7 +402,13 @@ public class CentroDeInvestigacao {
 
                 if (counter!=2)
                     return 0;
-                else if (testmes>12)
+
+                data = dataInInput.split("/");
+                testdia = Integer.parseInt(data[0]);
+                testmes = Integer.parseInt(data[1]);
+                testano = Integer.parseInt(data[2]);
+
+                if (testmes>12)
                     return 0;
                 else if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31))
                     return 0;

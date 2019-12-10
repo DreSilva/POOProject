@@ -10,6 +10,23 @@ public class Pessoa {
     protected ArrayList<Projeto> projeto= new ArrayList<Projeto>();
     protected JFrame framePessoasCarac, framePessoas;
 
+    public int isDocente(){
+        return 0;
+    }
+    public int isMestre(){
+        return 0;
+    }
+    public int isDoutorado(){
+        return 0;
+    }
+    public int isLicenciado(){
+        return 0;
+    }
+
+    public int custo(){
+        return 0;
+    }
+
     public void DisplayPessoa(JFrame frame){
         this.framePessoas = frame;
         new DarDisplayPessoa();

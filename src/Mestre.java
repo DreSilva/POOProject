@@ -1,6 +1,13 @@
 public class Mestre extends Formando {
 
-    public static int custo(int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa){
+    public int custo(){
+        return 800;
+    }
+    public int isMestre(){
+        return 1;
+    }
+
+    /*public static int custo(int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa){
         int custoPorMes=800;
         int custoFinal;
         int dia1=diaInBolsa, mes1=mesInBolsa, ano1=anoInBolsa, dia2=diaFimBolsa, mes2=mesFimBolsa, ano2=anoFimBolsa;
@@ -43,7 +50,7 @@ public class Mestre extends Formando {
 
         custoFinal=((difdias*31/custoPorMes)*custoPorMes)+(difmeses*custoPorMes)+(difanos*12*custoPorMes);
         return custoFinal;
-    }
+    }*/
 
     public Mestre(String nome, String email, int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa){
         super(nome, email, diaInBolsa, mesInBolsa, anoInBolsa, diaFimBolsa, mesFimBolsa, anoFimBolsa);

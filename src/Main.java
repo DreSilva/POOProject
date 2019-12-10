@@ -124,16 +124,16 @@ public class Main{
     }
 
     public void novaPessoa(CentroDeInvestigacao CISUC){
-        Pessoa pe1 = new Pessoa("André Silva", "blabla.mail.com");
-        Pessoa pe2 = new Pessoa("Tomás Ventura", "blabla.mail.com");
-        Pessoa pe3 = new Pessoa("Zé Miguel", "blabla.mail.com");
-        Pessoa pe4 = new Pessoa("João Pedro", "blabla.mail.com");
-        Pessoa pe5 = new Pessoa("Zé António", "blabla.mail.com");
-        Pessoa pe6 = new Pessoa("Zé Pedro", "blabla.mail.com");
-        Pessoa pe7 = new Pessoa("João Miguel", "blabla.mail.com");
-        Pessoa pe8 = new Pessoa("João António", "blabla.mail.com");
-        Pessoa pe9 = new Pessoa("João Zé", "blabla.mail.com");
-        Pessoa pe10 = new Pessoa("Zé João", "blabla.mail.com");
+        Docentes pe1 = new Docentes("tomas","blabla.mail.com",123,"Paneleirisses");
+        Licenciado pe2 = new Licenciado("Toni", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Doutorado pe3 = new Doutorado("Zeca", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Mestre pe4 = new Mestre("João Pedro", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Doutorado pe5 = new Doutorado("Zé António", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Licenciado pe6 = new Licenciado("Zé Pedro", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Doutorado pe7 = new Doutorado("João Miguel", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Mestre pe8 = new Mestre("João António", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Doutorado pe9 = new Doutorado("João Zé", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Mestre pe10 = new Mestre("Zé João", "blabla.mail.com", 1,1, 2020, 1,1,2021);
 
         CISUC.pessoas.add(pe1);
         CISUC.pessoas.add(pe2);

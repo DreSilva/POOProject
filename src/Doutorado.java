@@ -1,6 +1,13 @@
 public class Doutorado extends Bolseiros {
 
-    public static int custo(int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa){
+    public int custo(){
+        return 1000;
+    }
+    public int isDoutorado(){
+        return 1;
+    }
+
+    /*public static int custo(int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa){
         int custoPorMes=1000;
         int custoFinal;
         int dia1=diaInBolsa, mes1=mesInBolsa, ano1=anoInBolsa, dia2=diaFimBolsa, mes2=mesFimBolsa, ano2=anoFimBolsa;
@@ -43,7 +50,7 @@ public class Doutorado extends Bolseiros {
 
         custoFinal=((difdias*31/custoPorMes)*custoPorMes)+(difmeses*custoPorMes)+(difanos*12*custoPorMes);
         return custoFinal;
-    }
+    }*/
 
     public Doutorado(String nome, String email, int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa){
         super(nome, email, diaInBolsa, mesInBolsa, anoInBolsa, diaFimBolsa, mesFimBolsa, anoFimBolsa);
