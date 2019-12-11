@@ -44,7 +44,7 @@ public class Pessoa {
             framePessoasCarac.setSize(500, 500);
 
             panel = new JPanel();
-            panel.setLayout(new GridLayout(7, 2));
+            panel.setLayout(new GridLayout(5, 2));
 
             framePessoasCarac.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

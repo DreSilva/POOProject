@@ -32,6 +32,11 @@ public class Projeto {
             new DarDisplayProjConc();
     }
 
+    /**
+     * Classe que mostra as informações do projeto (projeto que ainda não foi terminado), nome, acrónimo, data de inicio, duração estimada
+     * Mostra também os botões Listar Tarefas, Listar Pessoas, Criar nova Tarefa, Listar tarefas não iniciadas, Listar tarefas não concluidas,
+     * Listar tarefas concluidas, Acrescentar uma pessoa ao projeto, Calcular o custo do projeto, Terminar o projeto e Voltar á frame anterior.
+     */
     public class DarDisplayProj extends JFrame {
         protected JLabel labelNome, labelAcro, labelDataIn, labelDuracao;
         protected JPanel panel;
@@ -104,6 +109,7 @@ public class Projeto {
             frameDisplay.setVisible(true);
         }
     }
+
     private class ProjetoListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -111,29 +117,28 @@ public class Projeto {
             if (cmd.equals("LISTARTAREFAS")) {
                 frameDisplay.dispose();
                 listarTarefas(frameDisplay);
-            }else if(cmd.equals("LISTARPESSOAS")){
+            } else if (cmd.equals("LISTARPESSOAS")) {
                 listarPessoas(frameDisplay);
                 frameDisplay.setVisible(false);
-            }else if (cmd.equals("CRIARTAREFA")){
+            } else if (cmd.equals("CRIARTAREFA")) {
                 criarTarefa(frameDisplay);
                 frameDisplay.setVisible(false);
-            }else if (cmd.equals("LISTARTNINI")) {
+            } else if (cmd.equals("LISTARTNINI")) {
                 listarTarefasNaoIniciadas(frameDisplay);
                 frameDisplay.setVisible(false);
-            }else if (cmd.equals("LISTARTNC")) {
+            } else if (cmd.equals("LISTARTNC")) {
                 listarTarefasNaoConcluidas(frameDisplay);
                 frameDisplay.setVisible(false);
-            }else if (cmd.equals("LISTARTCONC")) {
+            } else if (cmd.equals("LISTARTCONC")) {
                 listarTarefasConcluidas(frameDisplay);
                 frameDisplay.setVisible(false);
-            }
-            else if (cmd.equals("NOVAPESSOA")) {
+            } else if (cmd.equals("NOVAPESSOA")) {
                 novaPessoa(frameDisplay);
 
-            }else if (cmd.equals("CUSTOPROJ")) {
+            } else if (cmd.equals("CUSTOPROJ")) {
                 custoProjeto(frameDisplay);
 
-            }else if (cmd.equals("TERMINAPROJ")){
+            } else if (cmd.equals("TERMINAPROJ")) {
                 terminarProjeto(frameDisplay);
                 frameProjetos.setVisible(true);
 
@@ -144,6 +149,10 @@ public class Projeto {
         }
     }
 
+    /**
+     * Classe que mostra as informações do projeto (já terminado), nome, acrónimo, data de inicio, duração e data de fim.
+     * Mostra também os botões Listar Tarefas (que já estão todas terminadas), Listar Pessoas e Voltar à frame anterior.
+     */
     public class DarDisplayProjConc extends JFrame {
         protected JLabel labelNome, labelAcro, labelDataIn, labelDuracao, labelDataFim;
         protected JPanel panel;
@@ -190,6 +199,7 @@ public class Projeto {
             frameProjetosConc.setVisible(true);
         }
     }
+
     private class ProjetoConcListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -206,18 +216,22 @@ public class Projeto {
     }
 
 
-    public void criarTarefa(JFrame frame){
+    public void criarTarefa(JFrame frame) {
         this.frameDisplay = frame;
         new CriaTarefa();
     }
 
-    public class CriaTarefa extends JFrame{
+    /**
+     * Classe que cria uma nova tarefa, pede ao utilizador a data de inicio a duração estimada e a percentagem de conclusão.
+     * Mostra também os botões Ok e Voltar á frame anterior.
+     */
+    public class CriaTarefa extends JFrame {
         protected JPanel panel;
-        protected JLabel labelDataIn, labelDuracao, labelPercConc;
-        protected JTextField fieldDataIn, fieldDuracao, fieldPercConc;
+        protected JLabel labelDataIn, labelDuracao, labelTipo;
+        protected JTextField fieldDataIn, fieldDuracao, fieldTipo;
         protected JButton ok, voltar;
 
-        public CriaTarefa(){
+        public CriaTarefa() {
             super();
 
             frameCriaTarefa = new JFrame();
@@ -226,15 +240,15 @@ public class Projeto {
             frameCriaTarefa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             panel = new JPanel();
-            panel.setLayout(new GridLayout(4,2));
+            panel.setLayout(new GridLayout(4, 2));
 
             labelDataIn = new JLabel("Data de Inicio (dd/mm/aaaa)");
             labelDuracao = new JLabel("Duração Estimada (em meses)");
-            labelPercConc = new JLabel("Percentagem de Conclusão");
+            labelTipo = new JLabel("Tipo de tarefa (Documentação,Design,Desenvolvimento)");
 
             fieldDataIn = new JTextField(10);
             fieldDuracao = new JTextField(5);
-            fieldPercConc = new JTextField(3);
+            fieldTipo = new JTextField(15);
 
             ok = new JButton("OK");
             ok.setActionCommand("OK");
@@ -247,50 +261,80 @@ public class Projeto {
             panel.add(fieldDataIn);
             panel.add(labelDuracao);
             panel.add(fieldDuracao);
-            panel.add(labelPercConc);
-            panel.add(fieldPercConc);
+            panel.add(labelTipo);
+            panel.add(fieldTipo);
             panel.add(ok);
             panel.add(voltar);
 
             fieldDataIn.setDocument(new JTextFieldLimit(10));
             fieldDuracao.setDocument(new JTextFieldLimit(5));
-            fieldPercConc.setDocument(new JTextFieldLimit(3));
+            fieldTipo.setDocument(new JTextFieldLimit(15));
 
             frameCriaTarefa.add(panel);
             frameCriaTarefa.setVisible(true);
         }
+
         private class CriaTarefaListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String cmd = e.getActionCommand();
                 if (cmd.equals("OK")) {
-                    try{
+                    try {
                         double duracaoOut;
+                        int percConcOut;
                         String[] data;
                         int testdia, testmes, testano;
+                        int flag=0;
+                        Tarefa t1;
 
                         String dataInInput = fieldDataIn.getText();
                         String duracaoInput = fieldDuracao.getText();
-                        String percConcInput = fieldPercConc.getText();
+                        String tipo = fieldTipo.getText();
 
-                        duracaoOut=Double.parseDouble(duracaoInput);
+                        duracaoOut = Double.parseDouble(duracaoInput);
 
-                        if(verificaData(dataInInput) ==1){
+                        if (verificaData(dataInInput) == 1) {
+                            flag+=1;
+                        } else
+                            JOptionPane.showMessageDialog(null, "Por favor preencha todos os campos de forma correta.", "Inválido", JOptionPane.ERROR_MESSAGE);
+
+                        if (tipo.equals("Documentação")) {
+                            flag += 1;
+                            System.out.println("doc");
+                        }
+                        else if (tipo.equals("Design")) {
+                            flag +=1;
+                            System.out.println("design");
+                        }
+                        else if (tipo.equals("Desenvolvimento")) {
+                            flag +=1;
+                            System.out.println("desen");
+                        }
+                        else
+                            JOptionPane.showMessageDialog(null, "Insira um dos tipos de tarefas disponíveis!", "Inválido", JOptionPane.ERROR_MESSAGE);
+
+                        if (flag==2) {
                             data = dataInInput.split("/");
                             testdia = Integer.parseInt(data[0]);
                             testmes = Integer.parseInt(data[1]);
                             testano = Integer.parseInt(data[2]);
-                            Tarefa t1=new Tarefa(testdia,testmes,testano,duracaoOut,Integer.parseInt(percConcInput));
+                            if (tipo.equals("Documentação")){
+                                t1 = new Documentacao(testdia, testmes, testano, duracaoOut, 0);
+                            }
+                            else if (tipo.equals("Design")){
+                                t1 = new Design(testdia, testmes, testano, duracaoOut, 0);
+                            }
+                            else{
+                                t1 = new Desenvolvimento(testdia, testmes, testano, duracaoOut, 0);
+                            }
                             tarefas.add(t1);
                             JOptionPane.showMessageDialog(null, "Tarefa criada e adicionada com sucesso!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
                         }
-                        else{
-                            JOptionPane.showMessageDialog(null, "Por favor preencha todos os campos de forma correta.", "Inválido", JOptionPane.ERROR_MESSAGE);
-                        }
 
-                    }catch (NumberFormatException ex){
+                    } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(null, "Por favor preencha todos os campos de forma correta.", "Inválido", JOptionPane.ERROR_MESSAGE);
                     }
+
                     frameCriaTarefa.setVisible(false);
                     frameDisplay.setVisible(true);
 
@@ -299,38 +343,40 @@ public class Projeto {
                     frameDisplay.setVisible(true);
                 }
             }
+
             public int verificaData(String dataInInput) {
                 String[] data;
                 int testdia, testmes, testano;
-                int counter=0;
+                int counter = 0;
                 data = dataInInput.split("/");
                 testdia = Integer.parseInt(data[0]);
                 testmes = Integer.parseInt(data[1]);
                 testano = Integer.parseInt(data[2]);
 
-                for (int i=0;i<dataInInput.length();i++){
+                for (int i = 0; i < dataInInput.length(); i++) {
                     Character c1 = dataInInput.charAt(i);
                     Character c2 = '/';
-                    if (c1.equals(c2)){
+                    if (c1.equals(c2)) {
                         counter++;
                     }
                 }
 
-                if (counter!=2)
+                if (counter != 2)
                     return 0;
-                if (testmes>12)
+                if (testmes > 12)
                     return 0;
-                if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31))
+                if ((testmes == 1 || testmes == 3 || testmes == 5 || testmes == 7 || testmes == 8 || testmes == 10 || testmes == 12) && (testdia > 31))
                     return 0;
-                if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30))
+                if ((testmes == 4 || testmes == 6 || testmes == 9 || testmes == 11) && (testdia > 30))
                     return 0;
-                if ((testmes==2) && (testdia>28))
+                if ((testmes == 2) && (testdia > 28))
                     return 0;
 
                 return 1;
             }
         }
     }
+
     public class JTextFieldLimit extends PlainDocument {
         private int limit;
 
@@ -339,7 +385,7 @@ public class Projeto {
             this.limit = limit;
         }
 
-        public void insertString( int offset, String  str, AttributeSet attr ) throws BadLocationException {
+        public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
             if (str == null) return;
 
             if ((getLength() + str.length()) <= limit) {
@@ -350,27 +396,29 @@ public class Projeto {
 
     public void listarTarefasNaoIniciadas(JFrame frame) {
         ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
-        this.frameDisplay=frame;
-        for (Tarefa i:tarefas){
-            if (i.percentagemConc==0)
+        this.frameDisplay = frame;
+        for (Tarefa i : tarefas) {
+            if (i.percentagemConc == 0)
                 tarefasNaoIni.add(i);
         }
         new ListaTarefas(tarefas);
     }
+
     public void listarTarefasNaoConcluidas(JFrame frame) {
         ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
-        this.frameDisplay=frame;
-        for (Tarefa i:tarefas){
-            if (i.percentagemConc!=100)
+        this.frameDisplay = frame;
+        for (Tarefa i : tarefas) {
+            if (i.percentagemConc != 100)
                 tarefasNaoIni.add(i);
         }
         new ListaTarefas(tarefas);
     }
+
     public void listarTarefasConcluidas(JFrame frame) {
         ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
-        this.frameDisplay=frame;
-        for (Tarefa i:tarefas){
-            if (i.percentagemConc==100)
+        this.frameDisplay = frame;
+        for (Tarefa i : tarefas) {
+            if (i.percentagemConc == 100)
                 tarefasNaoIni.add(i);
         }
         new ListaTarefas(tarefas);
@@ -380,10 +428,14 @@ public class Projeto {
         this.frameDisplay = frame;
         new ListaTarefas(this.tarefas);
     }
+
+    /**
+     * Classe que lista as tarefas do projeto. Mostra também os botões Remover tarefa, Atribuir tarefa, Ok e Voltar á frame anterior.
+     */
     public class ListaTarefas extends JFrame {
         protected JLabel label;
         protected JPanel panel;
-        protected JButton ok, voltar,removerTarefa,atribuirTarefa;
+        protected JButton ok, voltar, removerTarefa, atribuirTarefa;
         protected JScrollPane listScroller;
 
         public ListaTarefas(ArrayList<Tarefa> tarefas) {
@@ -391,7 +443,7 @@ public class Projeto {
 
             frameTarefas = new JFrame();
             frameTarefas.setTitle("Lista de Tarefas");
-            frameTarefas.setSize(300, 300);
+            frameTarefas.setSize(350, 350);
             frameTarefas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             ok = new JButton("Ok");
@@ -408,12 +460,35 @@ public class Projeto {
             voltar.addActionListener(new ListaTarefasListener());
 
             DefaultListModel listTarefas = new DefaultListModel();
-            for (Tarefa i : tarefas)
-                listTarefas.addElement(i);
+            for (Tarefa i : tarefas) {
+                if (i.getTaxaDeEsforco() == 1) {
+                    if(i.pessoaReponsavel!=null){
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Desenvolvimento> "+ i.percentagemConc);
+                    }
+                    else{
+                        listTarefas.addElement("<Sem responsável>" + " <Desenvolvimento> "+i.percentagemConc);
+                    }
+                }
+                else if (i.getTaxaDeEsforco() == 0.5){
+                    if(i.pessoaReponsavel!=null) {
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Design> "+i.percentagemConc);
+                    }
+                    else{
+                        listTarefas.addElement("<Sem responsável>" + " <Design> "+i.percentagemConc);
+                    }
+                }
+                else if (i.getTaxaDeEsforco() == 0.25){
+                    if(i.pessoaReponsavel!=null) {
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Documentação> "+i.percentagemConc);
+                    }
+                    else{
+                        listTarefas.addElement("<Sem responsável>" + " <Documentação> "+i.percentagemConc);
+                    }
+                }
+            }
             listaSelecionados = new JList(listTarefas);
             listScroller = new JScrollPane(listaSelecionados);
             listScroller.setBounds(50, 35, 300, 150);
-
 
             panel = new JPanel();
             panel.add(listScroller);
@@ -433,32 +508,62 @@ public class Projeto {
             String cmd = e.getActionCommand();
             String valoresDaLista;
             if (cmd.equals("VOLTAR")) {
-                //frameTarefas.dispose();
+                frameTarefas.dispose();
                 frameDisplay.setVisible(true);
             } else if (cmd.equals("OK")) {
-                if (cmd.equals("OK")) {
-                    //frameTarefas.setVisible(false);
-                    valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
-                    if (valoresDaLista.isEmpty() == true) {
-                        JOptionPane.showMessageDialog(null, "Tem de selecionar uma tarefa!", "WARNING", JOptionPane.ERROR_MESSAGE);
-                        frameProjetos.setVisible(true);
-                    } else if (quantosSelecionados(valoresDaLista) == 1) {
-                        int a=listaSelecionados.getSelectedIndex();
-                        Tarefa tarefaDesejada = tarefas.get(a);
-                        if (tarefaDesejada != null) {
-                            //tarefaDesejada.DisplayTarefa(frameProjetos);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Só pode selecionar uma tarefa!", "WARNING", JOptionPane.ERROR_MESSAGE);
-                        frameProjetos.setVisible(true);
+                //frameTarefas.setVisible(false);
+                valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
+                if (valoresDaLista.isEmpty() == true) {
+                    JOptionPane.showMessageDialog(null, "Tem de selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameProjetos.setVisible(false);
+                } else if (quantosSelecionados(valoresDaLista) == 1) {
+                    int a = listaSelecionados.getSelectedIndex();
+                    Tarefa tarefaDesejada = tarefas.get(a);
+                    if (tarefaDesejada != null) {
+                        tarefaDesejada.DisplayTarefa(frameDisplay);
+                        frameTarefas.setVisible(false);
                     }
-                } else if (cmd.equals("REMOVER")) {
-                    System.out.println("2");
-                } else if (cmd.equals("ATRIBUIR")) {
-                    System.out.println("3");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
+
                 }
-            }
+            } else if (cmd.equals("REMOVER")) {
+                System.out.println("2");
+                valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
+                if (valoresDaLista.isEmpty() == true) {
+                    JOptionPane.showMessageDialog(null, "Tem de selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameProjetos.setVisible(false);
+                } else if (quantosSelecionados(valoresDaLista) == 1) {
+                    int a = listaSelecionados.getSelectedIndex();
+                    Tarefa tarefaDesejada = tarefas.get(a);
+                    if (tarefaDesejada != null) {
+                        tarefas.remove(tarefaDesejada);
+                        frameTarefas.dispose();
+                        frameDisplay.setVisible(true);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameProjetos.setVisible(true);
+                }
+            } else if (cmd.equals("ATRIBUIR")) {
+                System.out.println("3");
+                valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
+                if (valoresDaLista.isEmpty() == true) {
+                    JOptionPane.showMessageDialog(null, "Tem de selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameProjetos.setVisible(false);
+                } else if (quantosSelecionados(valoresDaLista) == 1) {
+                    int a = listaSelecionados.getSelectedIndex();
+                    Tarefa tarefaDesejada = tarefas.get(a);
+                    if (tarefaDesejada != null) {
+                        //tarefaDesejada.DisplayTarefa(frameProjetos);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameProjetos.setVisible(true);
+                }
         }
+    }
+
 
         int quantosSelecionados(String valoresDaLista) {
             int contador = 1;
@@ -476,6 +581,11 @@ public class Projeto {
         this.frameDisplay = frame;
         new ListarPessoas();
     }
+
+    /**
+     * Classe que lista as pessoas do projeto, investigador principal, docentes e bolseiros. Mostra também os botões Ok e Voltar à frame
+     * anterior.
+     */
     public class ListarPessoas extends JFrame {
         protected JLabel label;
         protected JPanel panel;
@@ -527,15 +637,17 @@ public class Projeto {
                 framePessoas.setVisible(false);
                 valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
                 if (valoresDaLista.isEmpty() == true) {
-                    JOptionPane.showMessageDialog(null, "Tem de selecionar uma pessoa!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Tem de selecionar uma pessoa!", "Inválido", JOptionPane.ERROR_MESSAGE);
                     framePessoas.setVisible(true);
                 } else if (quantosSelecionados(valoresDaLista) == 1) {
-                    Pessoa pessoaDesejada = procuraPessoaNoCentro(valoresDaLista, CentroDeInvestigacao.pessoas);
+                    Pessoa pessoaDesejada = procuraPessoaNoProjeto(valoresDaLista,bolseiros,docentes,investigadorPrincipal);
+                    System.out.println(pessoaDesejada.nome);
                     if(pessoaDesejada!=null) {
-                        System.out.println("yo");
+                        pessoaDesejada.DisplayPessoa(framePessoas);
+                        System.out.println("gay");
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
                     frameProjetos.setVisible(true);
                 }
             } else if (cmd.equals("VOLTAR")){
@@ -554,13 +666,25 @@ public class Projeto {
             return contador;
         }
 
-        Pessoa procuraPessoaNoCentro(String nome,ArrayList<Pessoa> pessoas){
-            Pessoa alvo=null;
-            for(Pessoa i:pessoas){
-                if(nome.equals(i.nome)){
-                    alvo=i;
+        Pessoa procuraPessoaNoProjeto(String nome,ArrayList<Bolseiros> bolseiros, ArrayList<Docentes> docentes, Pessoa investigadorPrincipal) {
+            Pessoa alvo = null;
+            if (investigadorPrincipal.nome.equals(nome)) {
+                alvo = investigadorPrincipal;
+            }
+            if (alvo == null) {
+                for (Docentes l : docentes) {
+                    if (l.nome.equals(nome))
+                        alvo = l;
                 }
             }
+            if(alvo==null) {
+                for (Bolseiros j : bolseiros) {
+                    if (j.nome.equals(nome))
+                        alvo = j;
+                }
+            }
+            if(alvo==null)
+                System.out.println("UR MEGA GAY");
             return alvo;
         }
     }
@@ -578,8 +702,9 @@ public class Projeto {
             String value = JOptionPane.showInputDialog(null, "Introduza a data de fim do Projeto", "Terminar Projeto", JOptionPane.QUESTION_MESSAGE);
 
             if (value==null){
-                frameDisplay.dispose();
-                frameProjetos.setVisible(true);
+                //frameDisplay.dispose();
+                //frameProjetos.setVisible(false);
+                frameDisplay.setVisible(true);
             }
             else if (value.length()==0){
                 JOptionPane.showMessageDialog(null, "Tem que inserir uma data", "Inválido", JOptionPane.ERROR_MESSAGE);
@@ -603,7 +728,6 @@ public class Projeto {
                     this.dataDeFim.setAno(Integer.parseInt(dataFim[2]));
                     frameDisplay.setVisible(false);
                     JOptionPane.showMessageDialog(null, "Projeto terminado com sucesso!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
-                    frameProjetos.setVisible(true);
                 }
             }
         }
@@ -617,25 +741,25 @@ public class Projeto {
         int flag=0;
         String value = JOptionPane.showInputDialog(null, "Introduza o nome da pessoa", "Adicionar pessoa ao Projeto", JOptionPane.QUESTION_MESSAGE);
         for (Pessoa i: CentroDeInvestigacao.pessoas){
-            if (i.nome.equals(value))
+            if (i.nome.equals(value)) {
                 flag=1;
-        }
-        if (flag==1){
-            System.out.println("gay");
-            if (investigadorPrincipal.nome.equals(value))
-                JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Investigador Principal!", "Inválido", JOptionPane.ERROR_MESSAGE);
-            for (Docentes i: docentes){
-                if (i.nome.equals(value))
-                    JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Docente!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                if (investigadorPrincipal.nome.equals(value))
+                    JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Investigador Principal!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                for (Docentes l: docentes){
+                    if (l.nome.equals(value))
+                        JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Docente!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                }
+                for (Bolseiros j: bolseiros){
+                    if (j.nome.equals(value))
+                        JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Bolseiro!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                }
+                /*if (i.custo()!=0)
+                    Projeto.bolseiros.addElement(i);
+                else
+                    Projeto.docentes.addElement(i);*/
             }
-            for (Bolseiros j: bolseiros){
-                if (j.nome.equals(value))
-                    JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Bolseiro!", "Inválido", JOptionPane.ERROR_MESSAGE);
-
-            }
-            ***ADICIONAR PESSOA AO PROJETO***
         }
-        else{
+        if (flag==0){
             JOptionPane.showMessageDialog(null, "Tem que inserir uma pessoa do centro!", "Inválido", JOptionPane.ERROR_MESSAGE);
         }
     }

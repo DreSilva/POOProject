@@ -67,6 +67,9 @@ public class CentroDeInvestigacao {
         new ListaProjetos(projetosConc);
     }
 
+    /**
+     * Classe que lista os Projetos
+     */
     public class ListaProjetos extends JFrame {
         protected JLabel label;
         protected JPanel panel;
@@ -162,7 +165,10 @@ public class CentroDeInvestigacao {
         }
     }
 
-
+    /**
+     * Classe que lista as pessoas
+     * @param frame frame anterior para que possamos voltar atrás
+     */
     public void ListarPessoas(JFrame frame){
         this.frameOriginal = frame;
         new ListaPessoas(this.pessoas);
@@ -269,6 +275,9 @@ public class CentroDeInvestigacao {
         new AdicionaProjeto();
     }
 
+    /**
+     * Classe que adiciona um projeto ao centro
+     */
     public class AdicionaProjeto extends JFrame{
         protected JPanel panel;
         protected JLabel labelNome, labelAcro, labelDataIn, labelDuracao, labelInvPr;

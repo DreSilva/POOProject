@@ -5,6 +5,9 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/**
+ * Classe main, cria um novo centro chamado CISUC
+ */
 public class Main{
     protected NossaFrame frameCentros;
     protected CentroDeInvestigacao CISUC;
@@ -56,6 +59,10 @@ public class Main{
             }
         }
     }
+
+    /**
+     * Frame inicial que mostra o nome do centro, e os botões Listar Pessoas, Listar Projetos, Adicionar Projeto, Listar Projetos não concluidos na data estimada e Listar Projetos concluidos
+     */
     public class NossaFrame extends JFrame{
         protected JLabel label;
         protected JPanel panelInicial;
@@ -126,7 +133,7 @@ public class Main{
     public void novaPessoa(CentroDeInvestigacao CISUC){
         Docentes pe1 = new Docentes("tomas","blabla.mail.com",123,"Paneleirisses");
         Licenciado pe2 = new Licenciado("Toni", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-        Doutorado pe3 = new Doutorado("Zeca", "blabla.mail.com", 1,1, 2020, 1,1,2021);
+        Docentes pe3 = new Docentes("Zeca", "blabla.mail.com", 1,"gaydamerda");
         Mestre pe4 = new Mestre("João Pedro", "blabla.mail.com", 1,1, 2020, 1,1,2021);
         Doutorado pe5 = new Doutorado("Zé António", "blabla.mail.com", 1,1, 2020, 1,1,2021);
         Licenciado pe6 = new Licenciado("Zé Pedro", "blabla.mail.com", 1,1, 2020, 1,1,2021);
