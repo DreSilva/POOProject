@@ -8,7 +8,7 @@ public class Pessoa {
     protected String nome,email;
     protected ArrayList<Tarefa> tarefas= new ArrayList<Tarefa>();
     protected ArrayList<Projeto> projeto= new ArrayList<Projeto>();
-    protected JFrame framePessoasCarac, framePessoas;
+    protected JFrame framePessoasCarac, framePessoas, frameProjPessoa, frameTarefasPessoa;
 
     public int isDocente(){
         return 0;
@@ -79,14 +79,121 @@ public class Pessoa {
                     framePessoas.setVisible(true);
                 }
                 else if (cmd.equals("LISTARPROJPESSOA")) {
-
+                    listarProjPessoa(framePessoas);
                     //framePessoas.setVisible(true);
                 }
                 else if (cmd.equals("LISTARTAREFASPESSOA")) {
-
+                    listarTarefasPessoa(framePessoas);
                     //framePessoas.setVisible(true);
                 }
 
+            }
+        }
+    }
+    public void listarProjPessoa(JFrame frame){
+        this.framePessoas = frame;
+        new ListarProjPessoa();
+    }
+    public class ListarProjPessoa extends JFrame{
+        protected JLabel label;
+        protected JPanel panel;
+        protected JButton voltar;
+        protected JScrollPane listScroller;
+
+        public ListarProjPessoa() {
+            super();
+
+            frameProjPessoa = new JFrame();
+            frameProjPessoa.setTitle("Lista de Projetos da pessoa");
+            frameProjPessoa.setSize(400, 300);
+            frameProjPessoa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            DefaultListModel listProjetosPessoa = new DefaultListModel();
+            for (Projeto i : CentroDeInvestigacao.projetos){
+                for (Pessoa l : i.pessoas){
+                    if (l.nome.equals(nome)){
+                        listProjetosPessoa.addElement(l.nome);
+                    }
+                }
+            }
+
+            JList listaSelecionados = new JList(listProjetosPessoa);
+            listScroller = new JScrollPane(listaSelecionados);
+            listScroller.setBounds(50, 35, 300, 150);
+
+            voltar = new JButton("Voltar");
+            voltar.setActionCommand("VOLTAR");
+            voltar.addActionListener(new ListaProjPessoaListener());
+
+            panel = new JPanel();
+            panel.add(listScroller);
+            panel.add(voltar);
+
+            frameProjPessoa.add(panel);
+            frameProjPessoa.setVisible(true);
+        }
+    }
+    private class ListaProjPessoaListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String cmd = e.getActionCommand();
+            if (cmd.equals("VOLTAR")) {
+                frameProjPessoa.dispose();
+                framePessoas.setVisible(true);
+            }
+        }
+    }
+
+    public void listarTarefasPessoaPessoa(JFrame frame){
+        this.framePessoas = frame;
+        new ListarTarefasPessoa();
+    }
+    public class ListarTarefasPessoa extends JFrame{
+        protected JLabel label;
+        protected JPanel panel;
+        protected JButton voltar;
+        protected JScrollPane listScroller;
+
+        public ListarTarefasPessoa() {
+            super();
+
+            frameTarefasPessoa = new JFrame();
+            frameTarefasPessoa.setTitle("Lista de Tarefas da pessoa");
+            frameTarefasPessoa.setSize(400, 300);
+            frameTarefasPessoa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            DefaultListModel listTarPessoa = new DefaultListModel();
+            for (Projeto i : CentroDeInvestigacao.projetos){
+                for (Tarefa l : i.tarefas){
+                    if (l.nome.equals(nome)){
+                        listTarPessoa.addElement(*.nome);
+                    }
+                }
+            }
+
+            JList listaSelecionados = new JList(listTarPessoa);
+            listScroller = new JScrollPane(listaSelecionados);
+            listScroller.setBounds(50, 35, 300, 150);
+
+            voltar = new JButton("Voltar");
+            voltar.setActionCommand("VOLTAR");
+            voltar.addActionListener(new ListaTarPessoaListener());
+
+            panel = new JPanel();
+            panel.add(listScroller);
+            panel.add(voltar);
+
+            frameTarefasPessoa.add(panel);
+            frameTarefasPessoa.setVisible(true);
+        }
+    }
+    private class ListaTarPessoaListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String cmd = e.getActionCommand();
+            if (cmd.equals("VOLTAR")) {
+                frameTarefasPessoa.dispose();
+                framePessoas.setVisible(true);
             }
         }
     }

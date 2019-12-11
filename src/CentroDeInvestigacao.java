@@ -122,24 +122,24 @@ public class CentroDeInvestigacao {
             String valoresDaLista;
             String cmd = e.getActionCommand();
             if (cmd.equals("OK")) {
-                    frameProjetos.setVisible(false);
-                    valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
-                    if (valoresDaLista.isEmpty() == true) {
-                        JOptionPane.showMessageDialog(null, "Tem de selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
-                        frameProjetos.setVisible(true);
-                    } else if (quantosSelecionados(valoresDaLista) == 1) {
-                        Projeto projetoDesejado = procuraProjetoNoCentro(valoresDaLista,projetos);
-                        if(projetoDesejado!=null) {
-                            projetoDesejado.DisplayProjeto(frameProjetos);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
-                        frameProjetos.setVisible(true);
+                frameProjetos.setVisible(false);
+                valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
+                if (valoresDaLista.isEmpty() == true) {
+                    JOptionPane.showMessageDialog(null, "Tem de selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                    frameProjetos.setVisible(true);
+                } else if (quantosSelecionados(valoresDaLista) == 1) {
+                    Projeto projetoDesejado = procuraProjetoNoCentro(valoresDaLista,projetos);
+                    if(projetoDesejado!=null) {
+                        projetoDesejado.DisplayProjeto(frameProjetos);
                     }
-                    //DisplayProjeto();
-                } else if (cmd.equals("VOLTAR")){
-                    frameProjetos.dispose();
-                    frameOriginal.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                    frameProjetos.setVisible(true);
+                }
+                //DisplayProjeto();
+            } else if (cmd.equals("VOLTAR")){
+                frameProjetos.dispose();
+                frameOriginal.setVisible(true);
             }
         }
 
