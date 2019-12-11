@@ -631,25 +631,33 @@ public class Projeto {
     private class ListaPessoasListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String valoresDaLista;
+            int indiceSelecionados[];
+            Pessoa pessoaDesejada;
             String cmd = e.getActionCommand();
             if (cmd.equals("OK")) {
                 framePessoas.setVisible(false);
-                valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
-                if (valoresDaLista.isEmpty() == true) {
+                indiceSelecionados=listaSelecionados.getSelectedIndices();
+                if(indiceSelecionados.length==0){
                     JOptionPane.showMessageDialog(null, "Tem de selecionar uma pessoa!", "Inválido", JOptionPane.ERROR_MESSAGE);
-                    framePessoas.setVisible(true);
-                } else if (quantosSelecionados(valoresDaLista) == 1) {
-                    Pessoa pessoaDesejada = procuraPessoaNoProjeto(valoresDaLista,bolseiros,docentes,investigadorPrincipal);
-                    System.out.println(pessoaDesejada.nome);
-                    if(pessoaDesejada!=null) {
-                        pessoaDesejada.DisplayPessoa(framePessoas);
-                        System.out.println("gay");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
-                    frameProjetos.setVisible(true);
+                    frameDisplay.setVisible(true);
                 }
+                else if(indiceSelecionados.length>1){
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameDisplay.setVisible(true);
+                }
+                else{
+                    if(indiceSelecionados[0]==0){
+                        pessoaDesejada=investigadorPrincipal;
+                    }
+                    else if(indiceSelecionados[0]>1 && indiceSelecionados[0]<=docentes.size()){
+                        pessoaDesejada=docentes.get(indiceSelecionados[0]-1);
+                    }
+                    else{
+                       pessoaDesejada=bolseiros.get(indiceSelecionados[0]-1-docentes.size());
+                    }
+                    pessoaDesejada.DisplayPessoa(framePessoas);
+                }
+
             } else if (cmd.equals("VOLTAR")){
                 framePessoas.dispose();
                 frameDisplay.setVisible(true);
