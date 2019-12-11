@@ -144,7 +144,7 @@ public class Pessoa {
         }
     }
 
-    public void listarTarefasPessoaPessoa(JFrame frame){
+    public void listarTarefasPessoa(JFrame frame){
         this.framePessoas = frame;
         new ListarTarefasPessoa();
     }
