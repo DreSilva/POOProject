@@ -40,4 +40,11 @@ public class Data {
     public String toString() {
         return dia + "/" + mês + "/" + ano;
     }
+
+    public int equals(Data data){
+        if(this.getDia()==data.getDia() && this.getMês()==data.getMês() && this.getAno()==data.getAno()){
+            return 1;
+        }
+        return 0;
+    }
 }

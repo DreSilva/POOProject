@@ -16,7 +16,7 @@ public class Projeto {
     protected Data dataInicio;
     protected Data dataDeFim;
     protected int duracao;
-    protected JFrame frameDisplay, frameProjetos, frameProjetosConc, frameTarefas, framePessoas, frameCriaTarefa, framePessoasProj;
+    protected JFrame frameDisplay, frameProjetos, frameProjetosConc, frameTarefas, frameTarefasConc,framePessoas, frameCriaTarefa, framePessoasProj;
     protected static ArrayList<Tarefa> tarefas = new ArrayList<Tarefa>();
     protected static ArrayList<Docentes> docentes = new ArrayList<Docentes>();
     protected static ArrayList<Bolseiros> bolseiros = new ArrayList<Bolseiros>();
@@ -284,7 +284,7 @@ public class Projeto {
                         int percConcOut;
                         String[] data;
                         int testdia, testmes, testano;
-                        int flag=0;
+                        int flag = 0;
                         Tarefa t1;
 
                         String dataInInput = fieldDataIn.getText();
@@ -294,37 +294,32 @@ public class Projeto {
                         duracaoOut = Double.parseDouble(duracaoInput);
 
                         if (verificaData(dataInInput) == 1) {
-                            flag+=1;
+                            flag += 1;
                         } else
                             JOptionPane.showMessageDialog(null, "Por favor preencha todos os campos de forma correta.", "Inválido", JOptionPane.ERROR_MESSAGE);
 
                         if (tipo.equals("Documentação")) {
                             flag += 1;
                             System.out.println("doc");
-                        }
-                        else if (tipo.equals("Design")) {
-                            flag +=1;
+                        } else if (tipo.equals("Design")) {
+                            flag += 1;
                             System.out.println("design");
-                        }
-                        else if (tipo.equals("Desenvolvimento")) {
-                            flag +=1;
+                        } else if (tipo.equals("Desenvolvimento")) {
+                            flag += 1;
                             System.out.println("desen");
-                        }
-                        else
+                        } else
                             JOptionPane.showMessageDialog(null, "Insira um dos tipos de tarefas disponíveis!", "Inválido", JOptionPane.ERROR_MESSAGE);
 
-                        if (flag==2) {
+                        if (flag == 2) {
                             data = dataInInput.split("/");
                             testdia = Integer.parseInt(data[0]);
                             testmes = Integer.parseInt(data[1]);
                             testano = Integer.parseInt(data[2]);
-                            if (tipo.equals("Documentação")){
+                            if (tipo.equals("Documentação")) {
                                 t1 = new Documentacao(testdia, testmes, testano, duracaoOut, 0);
-                            }
-                            else if (tipo.equals("Design")){
+                            } else if (tipo.equals("Design")) {
                                 t1 = new Design(testdia, testmes, testano, duracaoOut, 0);
-                            }
-                            else{
+                            } else {
                                 t1 = new Desenvolvimento(testdia, testmes, testano, duracaoOut, 0);
                             }
                             tarefas.add(t1);
@@ -414,16 +409,6 @@ public class Projeto {
         new ListaTarefas(tarefas);
     }
 
-    public void listarTarefasConcluidas(JFrame frame) {
-        ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
-        this.frameDisplay = frame;
-        for (Tarefa i : tarefas) {
-            if (i.percentagemConc == 100)
-                tarefasNaoIni.add(i);
-        }
-        new ListaTarefas(tarefas);
-    }
-
     public void listarTarefas(JFrame frame) {
         this.frameDisplay = frame;
         new ListaTarefas(this.tarefas);
@@ -462,27 +447,22 @@ public class Projeto {
             DefaultListModel listTarefas = new DefaultListModel();
             for (Tarefa i : tarefas) {
                 if (i.getTaxaDeEsforco() == 1) {
-                    if(i.pessoaReponsavel!=null){
-                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Desenvolvimento> "+ i.percentagemConc);
+                    if (i.pessoaReponsavel != null) {
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Desenvolvimento> " + i.percentagemConc);
+                    } else {
+                        listTarefas.addElement("<Sem responsável>" + " <Desenvolvimento> " + i.percentagemConc);
                     }
-                    else{
-                        listTarefas.addElement("<Sem responsável>" + " <Desenvolvimento> "+i.percentagemConc);
+                } else if (i.getTaxaDeEsforco() == 0.5) {
+                    if (i.pessoaReponsavel != null) {
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Design> " + i.percentagemConc);
+                    } else {
+                        listTarefas.addElement("<Sem responsável>" + " <Design> " + i.percentagemConc);
                     }
-                }
-                else if (i.getTaxaDeEsforco() == 0.5){
-                    if(i.pessoaReponsavel!=null) {
-                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Design> "+i.percentagemConc);
-                    }
-                    else{
-                        listTarefas.addElement("<Sem responsável>" + " <Design> "+i.percentagemConc);
-                    }
-                }
-                else if (i.getTaxaDeEsforco() == 0.25){
-                    if(i.pessoaReponsavel!=null) {
-                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Documentação> "+i.percentagemConc);
-                    }
-                    else{
-                        listTarefas.addElement("<Sem responsável>" + " <Documentação> "+i.percentagemConc);
+                } else if (i.getTaxaDeEsforco() == 0.25) {
+                    if (i.pessoaReponsavel != null) {
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Documentação> " + i.percentagemConc);
+                    } else {
+                        listTarefas.addElement("<Sem responsável>" + " <Documentação> " + i.percentagemConc);
                     }
                 }
             }
@@ -555,16 +535,172 @@ public class Projeto {
                     int a = listaSelecionados.getSelectedIndex();
                     Tarefa tarefaDesejada = tarefas.get(a);
                     if (tarefaDesejada != null) {
-                        //tarefaDesejada.DisplayTarefa(frameProjetos);
+                        atribuirTarefa(frameTarefas);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Só pode selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
                     frameProjetos.setVisible(true);
                 }
+            }
+        }
+
+
+        int quantosSelecionados(String valoresDaLista) {
+            int contador = 1;
+            char caracter;
+            for (int i = 0; i < valoresDaLista.length(); i++) {
+                caracter = valoresDaLista.charAt(i);
+                if (caracter == ';')
+                    contador++;
+            }
+            return contador;
         }
     }
 
+    public void atribuirTarefa (JFrame frame){
+            int flag=0;
+            Pessoa pessoaDesejada=null;
+            String value = JOptionPane.showInputDialog(null, "Introduza a pessoa a atribuir a tarefa", "Input", JOptionPane.QUESTION_MESSAGE);
+            for (Pessoa a : Projeto.docentes){
+                if (a.nome.equals(value))
+                    pessoaDesejada=a;
+            }
+            for (Pessoa b : Projeto.bolseiros){
+                if (b.nome.equals(value))
+                    pessoaDesejada=b;
+            }
+            if (investigadorPrincipal.nome.equals(value))
+                pessoaDesejada=investigadorPrincipal;
+            if (pessoaDesejada==null)
+                JOptionPane.showMessageDialog(null, "Tem de escolher uma pessoa do projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
+            else {
+                //verificaDisponibiladadeParaTarefa();
+            }
 
+    }
+
+    int verificaDisponibilidadeParaTarefa(Tarefa tarefa,Pessoa pessoa){
+        Data dataFinalEstimadaDeTarefa=calcularDataFinalTarefa(tarefa.dataInicio,tarefa.duracao);
+        Data dataAtual=tarefa.dataInicio;
+        double taxaDiaria=0;
+        while(dataAtual.equals(dataFinalEstimadaDeTarefa)!=1){
+            for(Tarefa i: pessoa.tarefas){
+                testarTaxaDeEsforcoDiaria(pessoa.tarefas,tarefa.getTaxaDeEsforco(),dataAtual);
+            }
+            taxaDiaria=0;
+        }
+    }
+
+    public int testarTaxaDeEsforcoDiaria(){
+        return 0;
+    }
+
+    public Data calcularDataFinalTarefa(Data dataInicio,double duracao){
+        Data dataDeFim=dataInicio;
+        double D=duracao;
+        while (D>=12){
+            dataDeFim.setAno(dataDeFim.getAno()+1);
+            D-=12;
+        }
+        dataDeFim.setMês((int)Math.floor(D));
+        D-=(int)Math.floor(D);
+        dataDeFim.setDia((int)Math.floor(D*30));
+        return dataDeFim;
+    }
+
+    public void listarTarefasConcluidas(JFrame frame) {
+        ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
+        this.frameDisplay = frame;
+        for (Tarefa i : tarefas) {
+            if (i.percentagemConc == 100)
+                tarefasNaoIni.add(i);
+        }
+        new ListaTarefasConc(tarefas);
+    }
+
+    public class ListaTarefasConc extends JFrame {
+        protected JLabel label;
+        protected JPanel panel;
+        protected JButton ok, voltar;
+        protected JScrollPane listScroller;
+
+        public ListaTarefasConc(ArrayList<Tarefa> tarefas) {
+            super();
+
+            frameTarefasConc = new JFrame();
+            frameTarefasConc.setTitle("Lista de Tarefas concluidas");
+            frameTarefasConc.setSize(350, 350);
+            frameTarefasConc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            ok = new JButton("Ok");
+            ok.setActionCommand("OK");
+            ok.addActionListener(new ListaTarefasConcListener());
+            voltar = new JButton("Voltar");
+            voltar.setActionCommand("VOLTAR");
+            voltar.addActionListener(new ListaTarefasConcListener());
+
+            DefaultListModel listTarefas = new DefaultListModel();
+            for (Tarefa i : tarefas) {
+                if (i.getTaxaDeEsforco() == 1) {
+                    if (i.pessoaReponsavel != null) {
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Desenvolvimento> " + i.percentagemConc);
+                    } else {
+                        listTarefas.addElement("<Sem responsável>" + " <Desenvolvimento> " + i.percentagemConc);
+                    }
+                } else if (i.getTaxaDeEsforco() == 0.5) {
+                    if (i.pessoaReponsavel != null) {
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Design> " + i.percentagemConc);
+                    } else {
+                        listTarefas.addElement("<Sem responsável>" + " <Design> " + i.percentagemConc);
+                    }
+                } else if (i.getTaxaDeEsforco() == 0.25) {
+                    if (i.pessoaReponsavel != null) {
+                        listTarefas.addElement(i.pessoaReponsavel.nome + " <Documentação> " + i.percentagemConc);
+                    } else {
+                        listTarefas.addElement("<Sem responsável>" + " <Documentação> " + i.percentagemConc);
+                    }
+                }
+            }
+
+            listaSelecionados = new JList(listTarefas);
+            listScroller = new JScrollPane(listaSelecionados);
+            listScroller.setBounds(50, 35, 300, 150);
+
+            panel = new JPanel();
+            panel.add(listScroller);
+            panel.add(ok);
+            panel.add(voltar);
+
+            frameTarefasConc.add(panel);
+            frameTarefasConc.setVisible(true);
+        }
+    }
+    private class ListaTarefasConcListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String cmd = e.getActionCommand();
+            String valoresDaLista;
+            if (cmd.equals("VOLTAR")) {
+                frameTarefasConc.dispose();
+                frameDisplay.setVisible(true);
+            } else if (cmd.equals("OK")) {
+                valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
+                if (valoresDaLista.isEmpty() == true) {
+                    JOptionPane.showMessageDialog(null, "Tem de selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameProjetos.setVisible(false);
+                } else if (quantosSelecionados(valoresDaLista) == 1) {
+                    int a = listaSelecionados.getSelectedIndex();
+                    Tarefa tarefaDesejada = tarefas.get(a);
+                    if (tarefaDesejada != null) {
+                        tarefaDesejada.DisplayTarefa(frameDisplay);
+                        frameTarefasConc.setVisible(false);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
+
+                }
+            }
+        }
         int quantosSelecionados(String valoresDaLista) {
             int contador = 1;
             char caracter;

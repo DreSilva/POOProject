@@ -7,8 +7,9 @@ import java.util.ArrayList;
 public class Pessoa {
     protected String nome,email;
     protected ArrayList<Tarefa> tarefas= new ArrayList<Tarefa>();
-    protected ArrayList<Projeto> projeto= new ArrayList<Projeto>();
+    protected ArrayList<Projeto> projetos= new ArrayList<Projeto>();
     protected JFrame framePessoasCarac, framePessoas, frameProjPessoa, frameTarefasPessoa;
+    protected JList listaSelecionados;
 
     public int isDocente(){
         return 0;
@@ -80,11 +81,11 @@ public class Pessoa {
                 }
                 else if (cmd.equals("LISTARPROJPESSOA")) {
                     listarProjPessoa(framePessoas);
-                    //framePessoas.setVisible(true);
+                    framePessoasCarac.setVisible(false);
                 }
                 else if (cmd.equals("LISTARTAREFASPESSOA")) {
                     listarTarefasPessoa(framePessoas);
-                    //framePessoas.setVisible(true);
+                    framePessoasCarac.setVisible(false);
                 }
 
             }
@@ -110,16 +111,22 @@ public class Pessoa {
 
             DefaultListModel listProjetosPessoa = new DefaultListModel();
             for (Projeto i : CentroDeInvestigacao.projetos){
-                for (Pessoa l : i.pessoas){
-                    if (l.nome.equals(nome)){
-                        listProjetosPessoa.addElement(l.nome);
-                    }
+                System.out.println(i.nome);
+                for (Pessoa a : i.docentes){
+                    if (a.nome.equals(nome))
+                        listProjetosPessoa.addElement(i.nome);
                 }
+                for (Pessoa b : i.bolseiros){
+                    if (b.nome.equals(nome))
+                        listProjetosPessoa.addElement(i.nome);
+                }
+                if (i.investigadorPrincipal.nome.equals(nome))
+                    listProjetosPessoa.addElement(i.nome);
             }
 
-            JList listaSelecionados = new JList(listProjetosPessoa);
+            listaSelecionados = new JList(listProjetosPessoa);
             listScroller = new JScrollPane(listaSelecionados);
-            listScroller.setBounds(50, 35, 300, 150);
+            listScroller.setBounds(10, 50, 200, 150);
 
             voltar = new JButton("Voltar");
             voltar.setActionCommand("VOLTAR");
@@ -164,9 +171,14 @@ public class Pessoa {
 
             DefaultListModel listTarPessoa = new DefaultListModel();
             for (Projeto i : CentroDeInvestigacao.projetos){
-                for (Tarefa l : i.tarefas){
-                    if (l.nome.equals(nome)){
-                        listTarPessoa.addElement(*.nome);
+                for (Tarefa l: i.tarefas){
+                    if(l.pessoaReponsavel.equals(nome)){
+                        if (l.getTaxaDeEsforco()==0.25)
+                            listTarPessoa.addElement("<Documentação> "+ i.nome);
+                        else if (l.getTaxaDeEsforco()==0.5)
+                            listTarPessoa.addElement("<Design> "+ i.nome);
+                        else if (l.getTaxaDeEsforco()==0.1)
+                            listTarPessoa.addElement("<Desenvolvimento> "+ i.nome);
                     }
                 }
             }

@@ -125,7 +125,7 @@ public class CentroDeInvestigacao {
                 frameProjetos.setVisible(false);
                 valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
                 if (valoresDaLista.isEmpty() == true) {
-                    JOptionPane.showMessageDialog(null, "Tem de selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Tem de selecionar um projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
                     frameProjetos.setVisible(true);
                 } else if (quantosSelecionados(valoresDaLista) == 1) {
                     Projeto projetoDesejado = procuraProjetoNoCentro(valoresDaLista,projetos);
@@ -133,7 +133,7 @@ public class CentroDeInvestigacao {
                         projetoDesejado.DisplayProjeto(frameProjetos);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
                     frameProjetos.setVisible(true);
                 }
                 //DisplayProjeto();
@@ -229,7 +229,7 @@ public class CentroDeInvestigacao {
                 framePessoas.setVisible(false);
                 valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
                 if (valoresDaLista.isEmpty() == true) {
-                    JOptionPane.showMessageDialog(null, "Tem de selecionar uma pessoa!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Tem de selecionar uma pessoa!", "Inválido", JOptionPane.ERROR_MESSAGE);
                     framePessoas.setVisible(true);
                 } else if (quantosSelecionados(valoresDaLista) == 1) {
                     Pessoa pessoaDesejada = procuraPessoaNoCentro(valoresDaLista,pessoas);
@@ -237,7 +237,7 @@ public class CentroDeInvestigacao {
                         pessoaDesejada.DisplayPessoa(framePessoas);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Só pode selecionar uma pessoa!", "WARNING", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Só pode selecionar uma pessoa!", "Inválido", JOptionPane.ERROR_MESSAGE);
                     framePessoas.setVisible(true);
                 }
                 //DisplayProjeto();
