@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.io.*;
 
 /**
  * Classe main, cria um novo centro chamado CISUC
@@ -223,4 +224,43 @@ public class Main{
         return 1;
     }
 
+    CentroDeInvestigacao loadCentro(String ficheiroObj,String ficheiroTxt){
+        File f = new File("ficheiro.obj");
+        CentroDeInvestigacao Centro=null;
+        if(f.exists() && f.isFile()) {
+            try {
+                FileInputStream fis = new FileInputStream(f);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                Centro = (CentroDeInvestigacao) ois.readObject();
+                ois.close();
+                return Centro;
+            } catch (FileNotFoundException ex) {
+                System.out.println("Erro a abrir ficheiro.");
+            } catch (IOException ex) {
+                System.out.println("Erro a ler ficheiro.");
+            } catch (ClassNotFoundException ex) {
+                System.out.println("Erro a converter objeto.");
+            }
+        }
+        else {
+            f = new File("ficheiro.txt");
+            String[] in;
+            try {
+                FileReader fr = new FileReader(f);
+                BufferedReader br = new BufferedReader(fr);
+                String line;
+                while((line = br.readLine()) != null) {
+                    in = line.split("/");
+                    if(in[1].equals("Tarefa")){
+
+                }
+                br.close();
+            } catch (FileNotFoundException ex) {
+                System.out.println("Erro a abrir ficheiro de texto.");
+            } catch (IOException ex) {
+                System.out.println("Erro a ler ficheiro de texto.");
+            }
+        }
+        return Centro;
+    }
 }
