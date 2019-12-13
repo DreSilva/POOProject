@@ -15,7 +15,7 @@ public class Main{
     public String DataHoje;
 
     public Main(){
-        String DataHoje = JOptionPane.showInputDialog(null, "Insira a data de hoje", "Input", JOptionPane.QUESTION_MESSAGE);
+        DataHoje = JOptionPane.showInputDialog(null, "Insira a data de hoje", "Input", JOptionPane.QUESTION_MESSAGE);
         if (DataHoje.length()==0) {
             JOptionPane.showMessageDialog(null, "Tem que inserir uma data", "Inválido", JOptionPane.ERROR_MESSAGE);
         }
@@ -28,7 +28,7 @@ public class Main{
         else if (verificaData(DataHoje)==1) {
             CISUC = new CentroDeInvestigacao("CISUC");
             novoProjeto(CISUC);
-            novaPessoa(CISUC);
+            //novaPessoa(CISUC);
             frameCentros = new NossaFrame(CISUC.getNome(),DataHoje);
             frameCentros.setTitle("Centro de Investigação");
             frameCentros.setSize(700, 150);
@@ -56,7 +56,6 @@ public class Main{
             }
             else if (cmd.equals("Adicionar Projeto")) {
                 frameCentros.setVisible(false);
-                System.out.println(DataHoje);
                 CISUC.AdicionarProjeto(frameCentros,DataHoje);
             }
             else if (cmd.equals("Listar PNCNDE")) {
@@ -167,7 +166,7 @@ public class Main{
         CISUC.projetos.add(p10);
     }
 
-    public void novaPessoa(CentroDeInvestigacao CISUC){
+    /*public void novaPessoa(CentroDeInvestigacao CISUC){
         Docentes pe1 = new Docentes("tomas","blabla.mail.com",123,"Paneleirisses");
         Licenciado pe2 = new Licenciado("Toni", "blabla.mail.com", 1,1, 2020, 1,1,2021);
         Docentes pe3 = new Docentes("Zeca", "blabla.mail.com", 1,"gaydamerda");
@@ -189,10 +188,10 @@ public class Main{
         CISUC.pessoas.add(pe8);
         CISUC.pessoas.add(pe9);
         CISUC.pessoas.add(pe10);
-    }
+    }*/
     public int verificaData(String DataHoje) {
-        String[] data;
-        int testdia, testmes, testano;
+        String[] data,dataMesmoHoje;
+        int testdia, testmes, testano, testMesmodia, testMesmomes, testMesmoano;
         int counter=0;
 
         for (int i=0;i<DataHoje.length();i++){
@@ -221,6 +220,18 @@ public class Main{
         else if ((testmes==2) && (testdia>28 || testdia<1))
             return 0;
 
+        dataMesmoHoje = DataHoje.split("/");
+        testMesmodia = Integer.parseInt(dataMesmoHoje[0]);
+        testMesmomes = Integer.parseInt(dataMesmoHoje[1]);
+        testMesmoano = Integer.parseInt(dataMesmoHoje[2]);
+
+        if (testMesmoano>testano)
+            return 2;
+        if ((testano==testMesmoano) && (testMesmomes>testmes))
+            return 2;
+        if ((testano==testMesmoano) && (testMesmomes==testmes) && (testMesmodia>testdia))
+            return 2;
+
         return 1;
     }
 
@@ -245,22 +256,65 @@ public class Main{
         else {
             f = new File("ficheiro.txt");
             String[] in;
+            String[] dataInicio,dataFim;
             try {
                 FileReader fr = new FileReader(f);
                 BufferedReader br = new BufferedReader(fr);
-                String line;
+                String line;Centro = new CentroDeInvestigacao("CISUC");
                 while((line = br.readLine()) != null) {
-                    in = line.split("/");
-                    if(in[1].equals("Tarefa")){
+                    in = line.split(",");
+                    if(in[0].equals("Docente")){
+                        Docentes docente=new Docentes(in[2],in[3],Integer.parseInt(in[1]),in[4]);
+                        Centro.pessoas.add(docente);
+                    }
+                    else if(in[0].equals("Mestre")){
+                        dataInicio=in[4].split("/");
+                        dataFim=in[5].split("/");
+                        Mestre mestre=new Mestre(in[2],in[3],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]),in[6]);
+                        Centro.pessoas.add(mestre);
+                    }
+                    else if(in[0].equals("Licenciado")){
+                        dataInicio=in[4].split("/");
+                        dataFim=in[5].split("/");
+                        Licenciado licenciado=new Licenciado(in[2],in[3],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]),in[6]);
+                        Centro.pessoas.add(licenciado);
+                    }
+                    else if(in[0].equals("Doutorado")){
+                        dataInicio=in[4].split("/");
+                        dataFim=in[5].split("/");
+                        Doutorado doutorado=new Doutorado(in[2],in[3],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]));
+                        Centro.pessoas.add(doutorado);
+                    }
+                    if(in[0].equals("Projeto")){
 
+
+                    }
+                    if(in[0].equals("Tarefa")){
+
+                    }
                 }
                 br.close();
-            } catch (FileNotFoundException ex) {
+            }catch (FileNotFoundException ex1) {
                 System.out.println("Erro a abrir ficheiro de texto.");
-            } catch (IOException ex) {
+            } catch (IOException ex1) {
                 System.out.println("Erro a ler ficheiro de texto.");
             }
+
         }
         return Centro;
+    }
+
+    public void escreveFich(CentroDeInvestigacao Centro){
+        File f = new File("ficheiro.obj");
+        try {
+            FileOutputStream fos = new FileOutputStream(f);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(Centro);
+            oos.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("Erro a criar ficheiro.");
+        } catch (IOException ex) {
+            System.out.println("Erro a escrever para o ficheiro.");
+        }
     }
 }

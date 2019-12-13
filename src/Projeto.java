@@ -22,9 +22,11 @@ public class Projeto {
     protected static ArrayList<Bolseiros> bolseiros = new ArrayList<Bolseiros>();
     protected Pessoa investigadorPrincipal;
     protected JList listaSelecionados;
+    public String DataHoje;
 
 
-    public void DisplayProjeto(JFrame frame) {
+    public void DisplayProjeto(JFrame frame, String DataHoje) {
+        this.DataHoje=DataHoje;
         this.frameProjetos = frame;
         if (dataDeFim.getDia() == 0)
             new DarDisplayProj();
@@ -116,30 +118,30 @@ public class Projeto {
             String cmd = e.getActionCommand();
             if (cmd.equals("LISTARTAREFAS")) {
                 frameDisplay.dispose();
-                listarTarefas(frameDisplay);
+                listarTarefas(frameDisplay, DataHoje);
             } else if (cmd.equals("LISTARPESSOAS")) {
-                listarPessoas(frameDisplay);
+                listarPessoas(frameDisplay, DataHoje);
                 frameDisplay.setVisible(false);
             } else if (cmd.equals("CRIARTAREFA")) {
-                criarTarefa(frameDisplay);
+                criarTarefa(frameDisplay, DataHoje);
                 frameDisplay.setVisible(false);
             } else if (cmd.equals("LISTARTNINI")) {
-                listarTarefasNaoIniciadas(frameDisplay);
+                listarTarefasNaoIniciadas(frameDisplay, DataHoje);
                 frameDisplay.setVisible(false);
             } else if (cmd.equals("LISTARTNC")) {
-                listarTarefasNaoConcluidas(frameDisplay);
+                listarTarefasNaoConcluidas(frameDisplay, DataHoje);
                 frameDisplay.setVisible(false);
             } else if (cmd.equals("LISTARTCONC")) {
-                listarTarefasConcluidas(frameDisplay);
+                listarTarefasConcluidas(frameDisplay, DataHoje);
                 frameDisplay.setVisible(false);
             } else if (cmd.equals("NOVAPESSOA")) {
                 novaPessoa(frameDisplay);
 
             } else if (cmd.equals("CUSTOPROJ")) {
-                custoProjeto(frameDisplay);
+                custoProjeto(frameDisplay, DataHoje);
 
             } else if (cmd.equals("TERMINAPROJ")) {
-                terminarProjeto(frameDisplay);
+                terminarProjeto(frameDisplay, DataHoje);
                 frameProjetos.setVisible(true);
 
             } else if (cmd.equals("VOLTAR")) {
@@ -208,15 +210,16 @@ public class Projeto {
                 frameProjetosConc.dispose();
                 frameProjetos.setVisible(true);
             } else if (cmd.equals("LISTARTAREFAS")) {
-                listarTarefas(frameProjetosConc);
+                listarTarefas(frameProjetosConc,DataHoje);
             } else if (cmd.equals("LISTARPESSOAS")) {
-                listarPessoas(frameProjetosConc);
+                listarPessoas(frameProjetosConc, DataHoje);
             }
         }
     }
 
 
-    public void criarTarefa(JFrame frame) {
+    public void criarTarefa(JFrame frame, String DataHoje){
+        this.DataHoje= DataHoje;
         this.frameDisplay = frame;
         new CriaTarefa();
     }
@@ -389,7 +392,8 @@ public class Projeto {
         }
     }
 
-    public void listarTarefasNaoIniciadas(JFrame frame) {
+    public void listarTarefasNaoIniciadas(JFrame frame, String DataHoje) {
+        this.DataHoje= DataHoje;
         ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
         this.frameDisplay = frame;
         for (Tarefa i : tarefas) {
@@ -399,7 +403,8 @@ public class Projeto {
         new ListaTarefas(tarefas);
     }
 
-    public void listarTarefasNaoConcluidas(JFrame frame) {
+    public void listarTarefasNaoConcluidas(JFrame frame, String DataHoje) {
+        this.DataHoje= DataHoje;
         ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
         this.frameDisplay = frame;
         for (Tarefa i : tarefas) {
@@ -409,7 +414,8 @@ public class Projeto {
         new ListaTarefas(tarefas);
     }
 
-    public void listarTarefas(JFrame frame) {
+    public void listarTarefas(JFrame frame, String DataHoje) {
+        this.DataHoje=DataHoje;
         this.frameDisplay = frame;
         new ListaTarefas(this.tarefas);
     }
@@ -500,7 +506,7 @@ public class Projeto {
                     int a = listaSelecionados.getSelectedIndex();
                     Tarefa tarefaDesejada = tarefas.get(a);
                     if (tarefaDesejada != null) {
-                        tarefaDesejada.DisplayTarefa(frameDisplay);
+                        tarefaDesejada.DisplayTarefa(frameDisplay, DataHoje);
                         frameTarefas.setVisible(false);
                     }
                 } else {
@@ -622,7 +628,8 @@ public class Projeto {
         return dataDeFim;
     }
 
-    public void listarTarefasConcluidas(JFrame frame) {
+    public void listarTarefasConcluidas(JFrame frame, String DataHoje) {
+        this.DataHoje=DataHoje;
         ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
         this.frameDisplay = frame;
         for (Tarefa i : tarefas) {
@@ -706,7 +713,7 @@ public class Projeto {
                     int a = listaSelecionados.getSelectedIndex();
                     Tarefa tarefaDesejada = tarefas.get(a);
                     if (tarefaDesejada != null) {
-                        tarefaDesejada.DisplayTarefa(frameDisplay);
+                        tarefaDesejada.DisplayTarefa(frameDisplay, DataHoje);
                         frameTarefasConc.setVisible(false);
                     }
                 } else {
@@ -727,7 +734,8 @@ public class Projeto {
         }
     }
 
-    public void listarPessoas(JFrame frame) {
+    public void listarPessoas(JFrame frame, String DataHoje) {
+        this.DataHoje=DataHoje;
         this.frameDisplay = frame;
         new ListarPessoas();
     }
@@ -847,7 +855,8 @@ public class Projeto {
         }
     }
 
-    public void terminarProjeto(JFrame frame) {
+    public void terminarProjeto(JFrame frame, String DataHoje) {
+        this.DataHoje=DataHoje;
         int contaTar=0;
         int conta100=0;
         this.frameDisplay=frame;
@@ -922,7 +931,8 @@ public class Projeto {
         }
     }
 
-    public void custoProjeto(JFrame frame){
+    public void custoProjeto(JFrame frame, String DataHoje){
+        this.DataHoje=DataHoje;
         double duracaoEscolhida;
         double custoProj=0;
         for (Tarefa i : tarefas){
@@ -1002,8 +1012,8 @@ public class Projeto {
     }
 
     public int verificaData(String DataHoje) {
-        String[] data;
-        int testdia, testmes, testano;
+        String[] data,dataMesmoHoje;
+        int testdia, testmes, testano, testMesmodia, testMesmomes, testMesmoano;
         int counter=0;
 
         for (int i=0;i<DataHoje.length();i++){
@@ -1031,6 +1041,18 @@ public class Projeto {
             return 0;
         else if ((testmes==2) && (testdia>28 || testdia<1))
             return 0;
+
+        dataMesmoHoje = DataHoje.split("/");
+        testMesmodia = Integer.parseInt(dataMesmoHoje[0]);
+        testMesmomes = Integer.parseInt(dataMesmoHoje[1]);
+        testMesmoano = Integer.parseInt(dataMesmoHoje[2]);
+
+        if (testMesmoano>testano)
+            return 2;
+        if ((testano==testMesmoano) && (testMesmomes>testmes))
+            return 2;
+        if ((testano==testMesmoano) && (testMesmomes==testmes) && (testMesmodia>testdia))
+            return 2;
 
         return 1;
     }

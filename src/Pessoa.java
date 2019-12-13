@@ -103,7 +103,7 @@ public class Pessoa {
 
         public ListarProjPessoa() {
             super();
-
+            int flag=0;
             frameProjPessoa = new JFrame();
             frameProjPessoa.setTitle("Lista de Projetos da pessoa");
             frameProjPessoa.setSize(400, 300);
@@ -113,15 +113,26 @@ public class Pessoa {
             for (Projeto i : CentroDeInvestigacao.projetos){
                 System.out.println(i.nome);
                 for (Pessoa a : i.docentes){
-                    if (a.nome.equals(nome))
+                    if (a.nome.equals(nome)) {
                         listProjetosPessoa.addElement(i.nome);
+                        flag = 1;
+                    }
                 }
                 for (Pessoa b : i.bolseiros){
-                    if (b.nome.equals(nome))
+                    if (b.nome.equals(nome)) {
                         listProjetosPessoa.addElement(i.nome);
+                        flag = 1;
+                    }
                 }
-                if (i.investigadorPrincipal.nome.equals(nome))
+                if (i.investigadorPrincipal.nome.equals(nome)) {
                     listProjetosPessoa.addElement(i.nome);
+                    flag=1;
+                }
+                else if (flag==0){
+                    listProjetosPessoa=null;///////////////////////////////////////////////////////////////////
+                }
+
+
             }
 
             listaSelecionados = new JList(listProjetosPessoa);

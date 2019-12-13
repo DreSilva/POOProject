@@ -16,7 +16,7 @@ public class CentroDeInvestigacao {
     protected String nome;
     protected static ArrayList<Projeto> projetos = new ArrayList<Projeto>();
     protected static ArrayList<Pessoa> pessoas = new ArrayList<Pessoa>();
-    protected String DataHoje1;
+    public String DataHoje;
 
     protected JFrame frameProjetos,frameOriginal,framePessoas,frameAdd;
     protected JList listaSelecionados;
@@ -29,14 +29,14 @@ public class CentroDeInvestigacao {
         return nome;
     }
 
-    public void ListarProjetosDoCentro(JFrame frame,String DataHoje) {
-        this.DataHoje1=DataHoje;
-        System.out.println(DataHoje);
+    public void ListarProjetosDoCentro(JFrame frame, String DataHoje) {
+        this.DataHoje=DataHoje;
         this.frameOriginal = frame;
-        new ListaProjetos(this.projetos);
+        new ListaProjetos(this.projetos, DataHoje);
     }
 
     public void ListarProjetosNConcluidosATempo(JFrame frame, String DataHoje) {
+        this.DataHoje=DataHoje;
         ArrayList<Projeto> projetosNConcATempo = new ArrayList<Projeto>();
         this.frameOriginal=frame;
         for (Projeto i: projetos) {
@@ -57,17 +57,18 @@ public class CentroDeInvestigacao {
                 }
             }
         }
-        new ListaProjetos(projetosNConcATempo);
+        new ListaProjetos(projetosNConcATempo, DataHoje);
     }
 
     public void ListarProjetosConcluidos(JFrame frame, String DataHoje) {
+        this.DataHoje=DataHoje;
         ArrayList<Projeto> projetosConc = new ArrayList<Projeto>();
         this.frameOriginal=frame;
         for (Projeto i: projetos){
             if (i.dataDeFim.getDia() !=0)
                 projetosConc.add(i);
         }
-        new ListaProjetos(projetosConc);
+        new ListaProjetos(projetosConc, DataHoje);
     }
 
     /**
@@ -80,7 +81,7 @@ public class CentroDeInvestigacao {
         protected JScrollPane listScroller;
         protected JFrame frameOriginal;
 
-        public ListaProjetos(ArrayList<Projeto> Projetos) {
+        public ListaProjetos(ArrayList<Projeto> Projetos, String DataHoje) {
             super();
 
             frameProjetos = new JFrame();
@@ -133,7 +134,7 @@ public class CentroDeInvestigacao {
                 } else if (quantosSelecionados(valoresDaLista) == 1) {
                     Projeto projetoDesejado = procuraProjetoNoCentro(valoresDaLista,projetos);
                     if(projetoDesejado!=null) {
-                        projetoDesejado.DisplayProjeto(frameProjetos);
+                        projetoDesejado.DisplayProjeto(frameProjetos, DataHoje);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Só pode selecionar um projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
@@ -398,13 +399,13 @@ public class CentroDeInvestigacao {
                     frameOriginal.setVisible(true);
                 }
             }
-            public int verificaData(String DataHoje) {
-                String[] data;
-                int testdia, testmes, testano;
+            public int verificaData(String DataInput) {
+                String[] data,dataMesmoHoje;
+                int testdia, testmes, testano, testMesmodia, testMesmomes, testMesmoano;
                 int counter=0;
 
-                for (int i=0;i<DataHoje.length();i++){
-                    Character c1 = DataHoje.charAt(i);
+                for (int i=0;i<DataInput.length();i++){
+                    Character c1 = DataInput.charAt(i);
                     Character c2 = '/';
                     if (c1.equals(c2)){
                         counter++;
@@ -413,7 +414,7 @@ public class CentroDeInvestigacao {
                 if (counter!=2)
                     return 0;
 
-                data = DataHoje.split("/");
+                data = DataInput.split("/");
                 testdia = Integer.parseInt(data[0]);
                 testmes = Integer.parseInt(data[1]);
                 testano = Integer.parseInt(data[2]);
@@ -428,6 +429,18 @@ public class CentroDeInvestigacao {
                     return 0;
                 else if ((testmes==2) && (testdia>28 || testdia<1))
                     return 0;
+
+                dataMesmoHoje = DataHoje.split("/");
+                testMesmodia = Integer.parseInt(dataMesmoHoje[0]);
+                testMesmomes = Integer.parseInt(dataMesmoHoje[1]);
+                testMesmoano = Integer.parseInt(dataMesmoHoje[2]);
+
+                if (testMesmoano>testano)
+                    return 2;
+                if ((testano==testMesmoano) && (testMesmomes>testmes))
+                    return 2;
+                if ((testano==testMesmoano) && (testMesmomes==testmes) && (testMesmodia>testdia))
+                    return 2;
 
                 return 1;
             }

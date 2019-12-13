@@ -15,12 +15,14 @@ public class Tarefa {
     protected double duracao;
     protected JFrame frameDisplay,frameTarefas,frameDisplayTarefa;
     protected Pessoa pessoaReponsavel;
+    public String DataHoje;
 
     /*public static void atualizarTarefas(String nome, String email, int diaFim, int mesFim, int anoFim, int percentagemConc){
 
     }*/
 
-    public void DisplayTarefa (JFrame frame){
+    public void DisplayTarefa (JFrame frame, String DataHoje){
+        this.DataHoje=DataHoje;
         this.frameDisplay=frame;
         new DarDisplayTarefa();
     }

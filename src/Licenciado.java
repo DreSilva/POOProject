@@ -1,4 +1,5 @@
 public class Licenciado extends Formando{
+    protected String pessoaResponsavel;
 
     public int custo(){
         return 500;
@@ -52,8 +53,9 @@ public class Licenciado extends Formando{
         return custoFinal;
     }*/
 
-    public Licenciado(String nome, String email, int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa){
+    public Licenciado(String nome, String email, int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa, String pessoaResponsavel){
         super(nome, email, diaInBolsa, mesInBolsa, anoInBolsa, diaFimBolsa, mesFimBolsa, anoFimBolsa);
+        this.pessoaResponsavel=pessoaResponsavel;
     }
 
 }
