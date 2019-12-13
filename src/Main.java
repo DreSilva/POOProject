@@ -11,16 +11,29 @@ import java.util.Calendar;
 public class Main{
     protected NossaFrame frameCentros;
     protected CentroDeInvestigacao CISUC;
+    public String DataHoje;
 
     public Main(){
-        CISUC = new CentroDeInvestigacao("CISUC");
-        novoProjeto(CISUC);
-        novaPessoa(CISUC);
-        frameCentros = new NossaFrame(CISUC.getNome());
-        frameCentros.setTitle("Centro de Investigação");
-        frameCentros.setSize(700,150);
-        frameCentros.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frameCentros.setVisible(true);
+        String DataHoje = JOptionPane.showInputDialog(null, "Insira a data de hoje", "Input", JOptionPane.QUESTION_MESSAGE);
+        if (DataHoje.length()==0) {
+            JOptionPane.showMessageDialog(null, "Tem que inserir uma data", "Inválido", JOptionPane.ERROR_MESSAGE);
+        }
+        else if (DataHoje==null){
+            JOptionPane.showMessageDialog(null, "Tem que inserir uma data", "Inválido", JOptionPane.ERROR_MESSAGE);
+        }
+        else if (verificaData(DataHoje)==0) {
+            JOptionPane.showMessageDialog(null, "Data Inválida!", "Inválido", JOptionPane.ERROR_MESSAGE);
+        }
+        else if (verificaData(DataHoje)==1) {
+            CISUC = new CentroDeInvestigacao("CISUC");
+            novoProjeto(CISUC);
+            novaPessoa(CISUC);
+            frameCentros = new NossaFrame(CISUC.getNome(),DataHoje);
+            frameCentros.setTitle("Centro de Investigação");
+            frameCentros.setSize(700, 150);
+            frameCentros.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frameCentros.setVisible(true);
+        }
     }
 
     public static void main(String[] args) {
@@ -33,29 +46,45 @@ public class Main{
             String cmd = e.getActionCommand();
             if (cmd.equals("Listar Pessoas")) {
                 frameCentros.setVisible(false);
-                CISUC.ListarPessoas(frameCentros);
-                //System.out.println("a");
+                CISUC.ListarPessoas(frameCentros,DataHoje);
             }
             else if (cmd.equals("Listar Projetos")) {
                 frameCentros.setVisible(false);
-                CISUC.ListarProjetosDoCentro(frameCentros);
-                //CISUC.ListarPessoasDoProjeto(frameCentros);
-                //frameCentros.setVisible(true);
+                System.out.println(DataHoje);
+                CISUC.ListarProjetosDoCentro(frameCentros,DataHoje);
             }
             else if (cmd.equals("Adicionar Projeto")) {
                 frameCentros.setVisible(false);
-                CISUC.AdicionarProjeto(frameCentros);
-                //System.out.println("c");
+                System.out.println(DataHoje);
+                CISUC.AdicionarProjeto(frameCentros,DataHoje);
             }
             else if (cmd.equals("Listar PNCNDE")) {
                 frameCentros.setVisible(false);
-                CISUC.ListarProjetosNConcluidosATempo(frameCentros);
-                //System.out.println("d");
+                CISUC.ListarProjetosNConcluidosATempo(frameCentros,DataHoje);
             }
             else if (cmd.equals("Listar Projetos Concluidos")) {
                 frameCentros.setVisible(false);
-                CISUC.ListarProjetosConcluidos(frameCentros);
-                //System.out.println("e");
+                CISUC.ListarProjetosConcluidos(frameCentros,DataHoje);
+            }
+            else if (cmd.equals("ALTERARDATAHOJE")) {
+                frameCentros.setVisible(false);
+                String DataHoje = JOptionPane.showInputDialog(null, "Introduza a data de hoje", "Input", JOptionPane.QUESTION_MESSAGE);
+                if (DataHoje.length()==0) {
+                    JOptionPane.showMessageDialog(null, "Tem que inserir uma data", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameCentros.setVisible(true);
+                }
+                else if (DataHoje==null){
+                    JOptionPane.showMessageDialog(null, "Tem que inserir uma data", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameCentros.setVisible(true);
+                }
+                else if (verificaData(DataHoje)==0) {
+                    JOptionPane.showMessageDialog(null, "Data Inválida!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    frameCentros.setVisible(true);
+                }
+                else if (verificaData(DataHoje)==1) {
+                    frameCentros.DataDEHoje.setText(DataHoje);
+                    frameCentros.setVisible(true);
+                }
             }
         }
     }
@@ -64,21 +93,23 @@ public class Main{
      * Frame inicial que mostra o nome do centro, e os botões Listar Pessoas, Listar Projetos, Adicionar Projeto, Listar Projetos não concluidos na data estimada e Listar Projetos concluidos
      */
     public class NossaFrame extends JFrame{
-        protected JLabel label;
+        protected JLabel label, DataDEHoje;
         protected JPanel panelInicial;
-        protected JButton listarPessoas,listarProjetos,adicionarProjeto,listarProjetosNaoConcluidosNaDataEstimada,listarProjetosConcluidos;
+        protected JButton listarPessoas,listarProjetos,adicionarProjeto,listarProjetosNaoConcluidosNaDataEstimada,listarProjetosConcluidos, alteraDataHoje;
 
-        public NossaFrame(String nomeDoCentro){
+        public NossaFrame(String nomeDoCentro,String DataHoje){
             super();
 
             this.panelInicial = new JPanel();
-            panelInicial.setLayout(new GridLayout(3,2));
+            panelInicial.setLayout(new GridLayout(4,2));
 
             listarPessoas = new JButton("Listar Pessoas");
             listarProjetos = new JButton("Listar Projetos");
             adicionarProjeto = new JButton("Adicionar Projeto");
             listarProjetosNaoConcluidosNaDataEstimada = new JButton("Listar Projetos não concluidos na data estimada");
             listarProjetosConcluidos = new JButton("Listar Projetos concluidos");
+            alteraDataHoje = new JButton("Alterar data de hoje");
+            DataDEHoje = new JLabel(DataHoje);
             label = new JLabel(nomeDoCentro);
 
             listarPessoas.addActionListener(new ButtonListener());
@@ -96,12 +127,17 @@ public class Main{
             listarProjetosConcluidos.addActionListener(new ButtonListener());
             listarProjetosConcluidos.setActionCommand("Listar Projetos Concluidos");
 
+            alteraDataHoje.addActionListener(new ButtonListener());
+            alteraDataHoje.setActionCommand("ALTERARDATAHOJE");
+
             panelInicial.add(label);
             panelInicial.add(listarPessoas);
             panelInicial.add(listarProjetos);
             panelInicial.add(adicionarProjeto);
             panelInicial.add(listarProjetosNaoConcluidosNaDataEstimada);
             panelInicial.add(listarProjetosConcluidos);
+            panelInicial.add(alteraDataHoje);
+            panelInicial.add(DataDEHoje);
 
             this.add(panelInicial);
         }
@@ -153,11 +189,38 @@ public class Main{
         CISUC.pessoas.add(pe9);
         CISUC.pessoas.add(pe10);
     }
+    public int verificaData(String DataHoje) {
+        String[] data;
+        int testdia, testmes, testano;
+        int counter=0;
 
-    public Data dataDeHoje(){
-        String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
-        String[] datastr = timeStamp.split("/");
-        Data data=new Data(Integer.parseInt(datastr[0]),Integer.parseInt(datastr[1]),Integer.parseInt(datastr[2]));
-        return data;
+        for (int i=0;i<DataHoje.length();i++){
+            Character c1 = DataHoje.charAt(i);
+            Character c2 = '/';
+            if (c1.equals(c2)){
+                counter++;
+            }
+        }
+        if (counter!=2)
+            return 0;
+
+        data = DataHoje.split("/");
+        testdia = Integer.parseInt(data[0]);
+        testmes = Integer.parseInt(data[1]);
+        testano = Integer.parseInt(data[2]);
+
+        if (testano<1)
+            return 0;
+        if (testmes>12 || testmes<1)
+            return 0;
+        else if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31 || testdia<1))
+            return 0;
+        else if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30 || testdia<1))
+            return 0;
+        else if ((testmes==2) && (testdia>28 || testdia<1))
+            return 0;
+
+        return 1;
     }
+
 }

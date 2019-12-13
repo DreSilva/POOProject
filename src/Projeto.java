@@ -535,7 +535,7 @@ public class Projeto {
                     int a = listaSelecionados.getSelectedIndex();
                     Tarefa tarefaDesejada = tarefas.get(a);
                     if (tarefaDesejada != null) {
-                        atribuirTarefa(frameTarefas);
+                        atribuirTarefa(frameTarefas,tarefaDesejada);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Só pode selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
@@ -557,7 +557,7 @@ public class Projeto {
         }
     }
 
-    public void atribuirTarefa (JFrame frame){
+    public void atribuirTarefa (JFrame frame, Tarefa tarefaDesejada){
             int flag=0;
             Pessoa pessoaDesejada=null;
             String value = JOptionPane.showInputDialog(null, "Introduza a pessoa a atribuir a tarefa", "Input", JOptionPane.QUESTION_MESSAGE);
@@ -574,25 +574,39 @@ public class Projeto {
             if (pessoaDesejada==null)
                 JOptionPane.showMessageDialog(null, "Tem de escolher uma pessoa do projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
             else {
-                //verificaDisponibiladadeParaTarefa();
+                verificaDisponibiladadeParaTarefa(tarefaDesejada,pessoaDesejada);
             }
 
     }
 
-    int verificaDisponibilidadeParaTarefa(Tarefa tarefa,Pessoa pessoa){
-        Data dataFinalEstimadaDeTarefa=calcularDataFinalTarefa(tarefa.dataInicio,tarefa.duracao);
-        Data dataAtual=tarefa.dataInicio;
-        double taxaDiaria=0;
+    public int verificaDisponibiladadeParaTarefa(Tarefa tarefaDesejada, Pessoa pessoaDesejada) {
+        Data dataFinalEstimadaDeTarefa=calcularDataFinalTarefa(tarefaDesejada.dataInicio,tarefaDesejada.duracao);
+        Data dataAtual=tarefaDesejada.dataInicio;
+        double taxaDiaria=0,flag=0;
         while(dataAtual.equals(dataFinalEstimadaDeTarefa)!=1){
-            for(Tarefa i: pessoa.tarefas){
-                testarTaxaDeEsforcoDiaria(pessoa.tarefas,tarefa.getTaxaDeEsforco(),dataAtual);
-            }
-            taxaDiaria=0;
+            flag=testarTaxaDeEsforcoDiaria(pessoaDesejada.tarefas,tarefaDesejada.getTaxaDeEsforco(),dataAtual);
         }
+        if(flag==1)
+            return 0;
+        else
+            return 1;
     }
 
-    public int testarTaxaDeEsforcoDiaria(){
-        return 0;
+    public int testarTaxaDeEsforcoDiaria(ArrayList<Tarefa> tarefas,double taxaDeEsforço,Data dataAtual){
+        Data dataFinalEstimadaDeTarefa;
+        double taxaDeEsforçoDia=0;
+        for(Tarefa i : tarefas){
+            dataFinalEstimadaDeTarefa=calcularDataFinalTarefa(i.dataInicio,i.duracao);
+            if(dataFinalEstimadaDeTarefa.getDia()>=dataAtual.getDia() && dataFinalEstimadaDeTarefa.getMês()>=dataAtual.getMês() && dataFinalEstimadaDeTarefa.getAno()>=dataAtual.getAno() && i.dataInicio.getDia()<=dataAtual.getDia() && i.dataInicio.getMês()<=dataAtual.getMês() && i.dataInicio.getAno()>=dataAtual.getAno()){
+                taxaDeEsforçoDia+=i.getTaxaDeEsforco();
+                if(taxaDeEsforçoDia==1)
+                    return 1;
+            }
+        }
+        if(taxaDeEsforço+taxaDeEsforçoDia>1)
+            return 1;
+        else
+            return 0;
     }
 
     public Data calcularDataFinalTarefa(Data dataInicio,double duracao){
@@ -987,14 +1001,13 @@ public class Projeto {
         return dataDeFim + data.getDia() + "/" + data.getMês() + "/" + data.getAno();
     }
 
-    public int verificaData(String dataInInput) {
+    public int verificaData(String DataHoje) {
         String[] data;
-        Data dataDeHoje=dataDeHoje();
         int testdia, testmes, testano;
         int counter=0;
 
-        for (int i=0;i<dataInInput.length();i++){
-            Character c1 = dataInInput.charAt(i);
+        for (int i=0;i<DataHoje.length();i++){
+            Character c1 = DataHoje.charAt(i);
             Character c2 = '/';
             if (c1.equals(c2)){
                 counter++;
@@ -1003,35 +1016,23 @@ public class Projeto {
         if (counter!=2)
             return 0;
 
-        data = dataInInput.split("/");
+        data = DataHoje.split("/");
         testdia = Integer.parseInt(data[0]);
         testmes = Integer.parseInt(data[1]);
         testano = Integer.parseInt(data[2]);
 
-
-        if (testmes>12)
+        if (testano<1)
             return 0;
-        else if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31))
+        if (testmes>12 || testmes<1)
             return 0;
-        else if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30))
+        else if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31 || testdia<1))
             return 0;
-        else if ((testmes==2) && (testdia>28))
+        else if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30 || testdia<1))
             return 0;
-
-        if ((dataDeHoje.getAno()==testano) && (dataDeHoje.getMês()==testmes) && (dataDeHoje.getDia()>testdia))
-            return 2;
-        else if ((dataDeHoje.getAno()==testano) && (dataDeHoje.getMês()>testmes))
-            return 2;
-        else if (dataDeHoje.getAno()>testano)
-            return 2;
+        else if ((testmes==2) && (testdia>28 || testdia<1))
+            return 0;
 
         return 1;
-    }
-    public Data dataDeHoje(){
-        String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
-        String[] datastr = timeStamp.split("/");
-        Data data=new Data(Integer.parseInt(datastr[0]),Integer.parseInt(datastr[1]),Integer.parseInt(datastr[2]));
-        return data;
     }
 
     /**

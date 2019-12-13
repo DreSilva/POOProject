@@ -16,6 +16,7 @@ public class CentroDeInvestigacao {
     protected String nome;
     protected static ArrayList<Projeto> projetos = new ArrayList<Projeto>();
     protected static ArrayList<Pessoa> pessoas = new ArrayList<Pessoa>();
+    protected String DataHoje1;
 
     protected JFrame frameProjetos,frameOriginal,framePessoas,frameAdd;
     protected JList listaSelecionados;
@@ -28,12 +29,14 @@ public class CentroDeInvestigacao {
         return nome;
     }
 
-    public void ListarProjetosDoCentro(JFrame frame) {
+    public void ListarProjetosDoCentro(JFrame frame,String DataHoje) {
+        this.DataHoje1=DataHoje;
+        System.out.println(DataHoje);
         this.frameOriginal = frame;
         new ListaProjetos(this.projetos);
     }
 
-    public void ListarProjetosNConcluidosATempo(JFrame frame) {
+    public void ListarProjetosNConcluidosATempo(JFrame frame, String DataHoje) {
         ArrayList<Projeto> projetosNConcATempo = new ArrayList<Projeto>();
         this.frameOriginal=frame;
         for (Projeto i: projetos) {
@@ -57,7 +60,7 @@ public class CentroDeInvestigacao {
         new ListaProjetos(projetosNConcATempo);
     }
 
-    public void ListarProjetosConcluidos(JFrame frame) {
+    public void ListarProjetosConcluidos(JFrame frame, String DataHoje) {
         ArrayList<Projeto> projetosConc = new ArrayList<Projeto>();
         this.frameOriginal=frame;
         for (Projeto i: projetos){
@@ -169,7 +172,7 @@ public class CentroDeInvestigacao {
      * Classe que lista as pessoas
      * @param frame frame anterior para que possamos voltar atrás
      */
-    public void ListarPessoas(JFrame frame){
+    public void ListarPessoas(JFrame frame, String DataHoje){
         this.frameOriginal = frame;
         new ListaPessoas(this.pessoas);
     }
@@ -270,7 +273,7 @@ public class CentroDeInvestigacao {
     }
 
 
-    public void AdicionarProjeto(JFrame frame){
+    public void AdicionarProjeto(JFrame frame, String DataHoje){
         this.frameOriginal = frame;
         new AdicionaProjeto();
     }
@@ -395,43 +398,36 @@ public class CentroDeInvestigacao {
                     frameOriginal.setVisible(true);
                 }
             }
-            public int verificaData(String dataInInput) {
+            public int verificaData(String DataHoje) {
                 String[] data;
-                Data dataDeHoje=dataDeHoje();
                 int testdia, testmes, testano;
                 int counter=0;
 
-                for (int i=0;i<dataInInput.length();i++){
-                    Character c1 = dataInInput.charAt(i);
+                for (int i=0;i<DataHoje.length();i++){
+                    Character c1 = DataHoje.charAt(i);
                     Character c2 = '/';
                     if (c1.equals(c2)){
                         counter++;
                     }
                 }
-
                 if (counter!=2)
                     return 0;
 
-                data = dataInInput.split("/");
+                data = DataHoje.split("/");
                 testdia = Integer.parseInt(data[0]);
                 testmes = Integer.parseInt(data[1]);
                 testano = Integer.parseInt(data[2]);
 
-                if (testmes>12)
+                if (testano<1)
                     return 0;
-                else if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31))
+                if (testmes>12 || testmes<1)
                     return 0;
-                else if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30))
+                else if ((testmes==1||testmes==3||testmes==5||testmes==7||testmes==8||testmes==10||testmes==12) && (testdia>31 || testdia<1))
                     return 0;
-                else if ((testmes==2) && (testdia>28))
+                else if ((testmes==4||testmes==6||testmes==9||testmes==11) && (testdia>30 || testdia<1))
                     return 0;
-
-                if ((dataDeHoje.getAno()==testano) && (dataDeHoje.getMês()==testmes) && (dataDeHoje.getDia()>testdia))
-                    return 2;
-                else if ((dataDeHoje.getAno()==testano) && (dataDeHoje.getMês()>testmes))
-                    return 2;
-                else if (dataDeHoje.getAno()>testano)
-                    return 2;
+                else if ((testmes==2) && (testdia>28 || testdia<1))
+                    return 0;
 
                 return 1;
             }
@@ -455,11 +451,5 @@ public class CentroDeInvestigacao {
         }
     }
 
-    public Data dataDeHoje(){
-        String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
-        String[] datastr = timeStamp.split("/");
-        Data data=new Data(Integer.parseInt(datastr[0]),Integer.parseInt(datastr[1]),Integer.parseInt(datastr[2]));
-        return data;
-    }
 }
 
