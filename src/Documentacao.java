@@ -1,4 +1,6 @@
-public class Documentacao extends Tarefa {
+import java.io.Serializable;
+
+public class Documentacao extends Tarefa implements Serializable {
 
     /*public static double taxaDeEsforco(){
 

@@ -1,5 +1,6 @@
 import com.sun.tools.javac.Main;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -11,7 +12,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
-public class CentroDeInvestigacao {
+public class CentroDeInvestigacao implements Serializable {
     protected JList listaProjetos, listaPessoas;
     protected String nome;
     protected static ArrayList<Projeto> projetos = new ArrayList<Projeto>();
@@ -40,19 +41,17 @@ public class CentroDeInvestigacao {
         ArrayList<Projeto> projetosNConcATempo = new ArrayList<Projeto>();
         this.frameOriginal=frame;
         for (Projeto i: projetos) {
-            if (i.dataInicio.getDia() !=0){
-                int diaEst=0,mesEst=0,anoEst=0;
-                if (i.dataInicio.getMês() + i.duracao<=12){
-                    diaEst=i.dataInicio.getDia();
-                    mesEst=i.dataInicio.getMês() + i.duracao;
-                    anoEst=i.dataInicio.getAno();
+            if (i.dataDeFim.getDia() !=0){
+                Data dataDeFimEstimada=i.dataInicio;
+                double D=i.duracao;
+                while (D>=12){
+                    dataDeFimEstimada.setAno(dataDeFimEstimada.getAno()+1);
+                    D-=12;
                 }
-                else{
-                    diaEst=i.dataInicio.getDia();
-                    mesEst=(i.dataInicio.getMês()+i.duracao)%12;
-                    anoEst=((i.dataInicio.getMês()+i.duracao)/12)+i.dataInicio.getAno();
-                }
-                if (i.dataDeFim.getAno() > anoEst || (i.dataDeFim.getAno()==anoEst && i.dataDeFim.getMês()>mesEst)) {
+                dataDeFimEstimada.setMês(dataDeFimEstimada.getMês()+(int)Math.floor(D));
+                D-=(int)Math.floor(D);
+                dataDeFimEstimada.setDia(dataDeFimEstimada.getDia()+(int)Math.floor(D*30));
+                if (i.dataDeFim.getAno() > dataDeFimEstimada.getDia() || (i.dataDeFim.getAno()==dataDeFimEstimada.getMês() && i.dataDeFim.getMês()>dataDeFimEstimada.getAno())) {
                     projetosNConcATempo.add(i);
                 }
             }

@@ -2,14 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Pessoa {
+public class Pessoa  implements Serializable {
     protected String nome,email;
     protected ArrayList<Tarefa> tarefas= new ArrayList<Tarefa>();
     protected ArrayList<Projeto> projetos= new ArrayList<Projeto>();
     protected JFrame framePessoasCarac, framePessoas, frameProjPessoa, frameTarefasPessoa;
     protected JList listaSelecionados;
+    protected String[] pessoasResponsaveis;
 
     public int isDocente(){
         return 0;

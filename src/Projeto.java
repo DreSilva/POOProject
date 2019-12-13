@@ -7,19 +7,20 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.beans.PropertyEditorSupport;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Projeto {
+public class Projeto implements Serializable {
     protected String nome, acronimo;
     protected Data dataInicio;
     protected Data dataDeFim;
     protected int duracao;
     protected JFrame frameDisplay, frameProjetos, frameProjetosConc, frameTarefas, frameTarefasConc,framePessoas, frameCriaTarefa, framePessoasProj;
     protected static ArrayList<Tarefa> tarefas = new ArrayList<Tarefa>();
-    protected static ArrayList<Docentes> docentes = new ArrayList<Docentes>();
-    protected static ArrayList<Bolseiros> bolseiros = new ArrayList<Bolseiros>();
+    protected static ArrayList<Pessoa> docentes = new ArrayList<Pessoa>();
+    protected static ArrayList<Pessoa> bolseiros = new ArrayList<Pessoa>();
     protected Pessoa investigadorPrincipal;
     protected JList listaSelecionados;
     public String DataHoje;
@@ -303,13 +304,10 @@ public class Projeto {
 
                         if (tipo.equals("Documentação")) {
                             flag += 1;
-                            System.out.println("doc");
                         } else if (tipo.equals("Design")) {
                             flag += 1;
-                            System.out.println("design");
                         } else if (tipo.equals("Desenvolvimento")) {
                             flag += 1;
-                            System.out.println("desen");
                         } else
                             JOptionPane.showMessageDialog(null, "Insira um dos tipos de tarefas disponíveis!", "Inválido", JOptionPane.ERROR_MESSAGE);
 
@@ -400,18 +398,18 @@ public class Projeto {
             if (i.percentagemConc == 0)
                 tarefasNaoIni.add(i);
         }
-        new ListaTarefas(tarefas);
+        new ListaTarefas(tarefasNaoIni);
     }
 
     public void listarTarefasNaoConcluidas(JFrame frame, String DataHoje) {
         this.DataHoje= DataHoje;
-        ArrayList<Tarefa> tarefasNaoIni = new ArrayList<Tarefa>();
+        ArrayList<Tarefa> tarefasNaoConc = new ArrayList<Tarefa>();
         this.frameDisplay = frame;
         for (Tarefa i : tarefas) {
             if (i.percentagemConc != 100)
-                tarefasNaoIni.add(i);
+                tarefasNaoConc.add(i);
         }
-        new ListaTarefas(tarefas);
+        new ListaTarefas(tarefasNaoConc);
     }
 
     public void listarTarefas(JFrame frame, String DataHoje) {
@@ -514,7 +512,6 @@ public class Projeto {
 
                 }
             } else if (cmd.equals("REMOVER")) {
-                System.out.println("2");
                 valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
                 if (valoresDaLista.isEmpty() == true) {
                     JOptionPane.showMessageDialog(null, "Tem de selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
@@ -532,7 +529,6 @@ public class Projeto {
                     frameProjetos.setVisible(true);
                 }
             } else if (cmd.equals("ATRIBUIR")) {
-                System.out.println("3");
                 valoresDaLista = String.join(";", listaSelecionados.getSelectedValuesList());
                 if (valoresDaLista.isEmpty() == true) {
                     JOptionPane.showMessageDialog(null, "Tem de selecionar uma tarefa!", "Inválido", JOptionPane.ERROR_MESSAGE);
@@ -622,9 +618,9 @@ public class Projeto {
             dataDeFim.setAno(dataDeFim.getAno()+1);
             D-=12;
         }
-        dataDeFim.setMês((int)Math.floor(D));
+        dataDeFim.setMês(dataDeFim.getMês()+(int)Math.floor(D));
         D-=(int)Math.floor(D);
-        dataDeFim.setDia((int)Math.floor(D*30));
+        dataDeFim.setDia(dataDeFim.getDia()+(int)Math.floor(D*30));
         return dataDeFim;
     }
 
@@ -761,9 +757,9 @@ public class Projeto {
             DefaultListModel listPessoas = new DefaultListModel();
             if (investigadorPrincipal!=null)
                 listPessoas.addElement(investigadorPrincipal.nome + " <investigador principal>");
-            for (Docentes i : docentes)
+            for (Pessoa i : docentes)
                 listPessoas.addElement(i.nome + " <docente>");
-            for (Bolseiros i : bolseiros)
+            for (Pessoa i : bolseiros)
                 listPessoas.addElement(i.nome+ " <bolseiro>");
 
             ok = new JButton("Ok");
@@ -849,8 +845,6 @@ public class Projeto {
                         alvo = j;
                 }
             }
-            if(alvo==null)
-                System.out.println("UR MEGA GAY");
             return alvo;
         }
     }
@@ -905,25 +899,59 @@ public class Projeto {
     }
 
     public void novaPessoa(JFrame frame){
-        int flag=0;
+        int flag=0,counter=0;
+        String[] responsaveisL;
         String value = JOptionPane.showInputDialog(null, "Introduza o nome da pessoa", "Adicionar pessoa ao Projeto", JOptionPane.QUESTION_MESSAGE);
+
         for (Pessoa i: CentroDeInvestigacao.pessoas){
             if (i.nome.equals(value)) {
                 flag=1;
                 if (investigadorPrincipal.nome.equals(value))
                     JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Investigador Principal!", "Inválido", JOptionPane.ERROR_MESSAGE);
-                for (Docentes l: docentes){
+                for (Pessoa l: docentes){
                     if (l.nome.equals(value))
                         JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Docente!", "Inválido", JOptionPane.ERROR_MESSAGE);
                 }
-                for (Bolseiros j: bolseiros){
+                for (Pessoa j: bolseiros){
                     if (j.nome.equals(value))
                         JOptionPane.showMessageDialog(null, "Essa pessoa já se encontra no projeto como Bolseiro!", "Inválido", JOptionPane.ERROR_MESSAGE);
                 }
-                /*if (i.custo()!=0)
-                    Projeto.bolseiros.addElement(i);
-                else
-                    Projeto.docentes.addElement(i);*/
+                if (i.isLicenciado()==1 || i.isMestre()==1){
+                    String responsaveis = JOptionPane.showInputDialog(null, "Introduza o(s) nome(s) do(s) responsável(eis) (separados por espaços)", "Adicionar pessoa ao Projeto", JOptionPane.QUESTION_MESSAGE);
+                    responsaveisL=responsaveis.split(" ");
+                    ArrayList<Pessoa> responsaveisA = new ArrayList<Pessoa>(responsaveisL.length);
+                    if (i.projetos.size()==1){
+                        JOptionPane.showMessageDialog(null, "Este bolseiro já se encontra num projeto!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                    }
+                    else{
+                        int contaRespon=0;
+                        for (String r: responsaveisL) {
+                            if (investigadorPrincipal.nome.equals(r)) {
+                                responsaveisA.add(investigadorPrincipal);
+                                contaRespon += 1;
+                            }
+                            for (Pessoa l : docentes) {
+                                if (l.nome.equals(responsaveisL)) {
+                                    responsaveisA.add(l);
+                                    contaRespon += 1;
+                                }
+                            }
+                            if (contaRespon == responsaveisL.length) {
+                                for (Pessoa x : responsaveisA) {
+                                    i.pessoasResponsaveis[counter++] = x.nome;
+                                }
+                                bolseiros.add(i);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Tem que inserir pessoas que possam ser responsáveis (Docentes)!", "Inválido", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+
+                    }
+                }else if(i.isDoutorado()==1){
+                    bolseiros.add(i);
+                }else if(i.isDocente()==1) {
+                    docentes.add(i);
+                }
             }
         }
         if (flag==0){
@@ -1072,5 +1100,12 @@ public class Projeto {
         this.dataInicio = new Data(diaIn, mesIn, anoIn);
         this.duracao = duracao;
         this.dataDeFim = new Data(0, 0, 0);
+    }
+    public Projeto(String nome, String acronimo, int diaIn, int mesIn, int anoIn, int duracao, int diaF, int mesF, int anoF) {
+        this.nome = nome;
+        this.acronimo = acronimo;
+        this.dataInicio = new Data(diaIn, mesIn, anoIn);
+        this.duracao = duracao;
+        this.dataDeFim = new Data(diaF, mesF, anoF);
     }
 }

@@ -1,4 +1,6 @@
-public class Docentes extends Pessoa {
+import java.io.Serializable;
+
+public class Docentes extends Pessoa implements Serializable {
     protected int numMecano;
     protected String areaInv;
 

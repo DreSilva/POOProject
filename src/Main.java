@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Arc2D;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.io.*;
@@ -9,7 +12,7 @@ import java.io.*;
 /**
  * Classe main, cria um novo centro chamado CISUC
  */
-public class Main{
+public class Main implements Serializable{
     protected NossaFrame frameCentros;
     protected CentroDeInvestigacao CISUC;
     public String DataHoje;
@@ -26,13 +29,16 @@ public class Main{
             JOptionPane.showMessageDialog(null, "Data Inválida!", "Inválido", JOptionPane.ERROR_MESSAGE);
         }
         else if (verificaData(DataHoje)==1) {
-            CISUC = new CentroDeInvestigacao("CISUC");
-            novoProjeto(CISUC);
-            //novaPessoa(CISUC);
+            CISUC = loadCentro("ficheiro.obj","ficheiro.txt");
             frameCentros = new NossaFrame(CISUC.getNome(),DataHoje);
             frameCentros.setTitle("Centro de Investigação");
             frameCentros.setSize(700, 150);
             frameCentros.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frameCentros.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    escreveFich(CISUC);
+                }
+            });
             frameCentros.setVisible(true);
         }
     }
@@ -142,53 +148,7 @@ public class Main{
             this.add(panelInicial);
         }
     }
-    public void novoProjeto(CentroDeInvestigacao CISUC) {
-        Projeto p1 = new Projeto("Projeto 1", "P1", 28, 11, 2019, 1);
-        Projeto p2 = new Projeto("Projeto 2", "P2", 25, 11, 2019, 2);
-        Projeto p3 = new Projeto("Projeto 3", "P3", 23, 11, 2019, 3);
-        Projeto p4 = new Projeto("Projeto 4", "P4", 23, 11, 2019, 3);
-        Projeto p5 = new Projeto("Projeto 5", "P5", 23, 11, 2019, 3);
-        Projeto p6 = new Projeto("Projeto 6", "P6", 23, 11, 2019, 3);
-        Projeto p7 = new Projeto("Projeto 7", "P7", 23, 11, 2019, 3);
-        Projeto p8 = new Projeto("Projeto 8", "P8", 23, 11, 2019, 3);
-        Projeto p9 = new Projeto("Projeto 9", "P9", 23, 11, 2019, 3);
-        Projeto p10 = new Projeto("Projeto 10", "P10", 23, 11, 2019, 3);
 
-        CISUC.projetos.add(p1);
-        CISUC.projetos.add(p2);
-        CISUC.projetos.add(p3);
-        CISUC.projetos.add(p4);
-        CISUC.projetos.add(p5);
-        CISUC.projetos.add(p6);
-        CISUC.projetos.add(p7);
-        CISUC.projetos.add(p8);
-        CISUC.projetos.add(p9);
-        CISUC.projetos.add(p10);
-    }
-
-    /*public void novaPessoa(CentroDeInvestigacao CISUC){
-        Docentes pe1 = new Docentes("tomas","blabla.mail.com",123,"Paneleirisses");
-        Licenciado pe2 = new Licenciado("Toni", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-        Docentes pe3 = new Docentes("Zeca", "blabla.mail.com", 1,"gaydamerda");
-        Mestre pe4 = new Mestre("João Pedro", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-        Doutorado pe5 = new Doutorado("Zé António", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-        Licenciado pe6 = new Licenciado("Zé Pedro", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-        Doutorado pe7 = new Doutorado("João Miguel", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-        Mestre pe8 = new Mestre("João António", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-        Doutorado pe9 = new Doutorado("João Zé", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-        Mestre pe10 = new Mestre("Zé João", "blabla.mail.com", 1,1, 2020, 1,1,2021);
-
-        CISUC.pessoas.add(pe1);
-        CISUC.pessoas.add(pe2);
-        CISUC.pessoas.add(pe3);
-        CISUC.pessoas.add(pe4);
-        CISUC.pessoas.add(pe5);
-        CISUC.pessoas.add(pe6);
-        CISUC.pessoas.add(pe7);
-        CISUC.pessoas.add(pe8);
-        CISUC.pessoas.add(pe9);
-        CISUC.pessoas.add(pe10);
-    }*/
     public int verificaData(String DataHoje) {
         String[] data,dataMesmoHoje;
         int testdia, testmes, testano, testMesmodia, testMesmomes, testMesmoano;
@@ -260,23 +220,24 @@ public class Main{
             try {
                 FileReader fr = new FileReader(f);
                 BufferedReader br = new BufferedReader(fr);
-                String line;Centro = new CentroDeInvestigacao("CISUC");
+                String line;
+                Centro = new CentroDeInvestigacao("CISUC");
                 while((line = br.readLine()) != null) {
                     in = line.split(",");
-                    if(in[0].equals("Docente")){
+                    if(in[0].equalsIgnoreCase("Docente")){
                         Docentes docente=new Docentes(in[2],in[3],Integer.parseInt(in[1]),in[4]);
                         Centro.pessoas.add(docente);
                     }
                     else if(in[0].equals("Mestre")){
                         dataInicio=in[4].split("/");
                         dataFim=in[5].split("/");
-                        Mestre mestre=new Mestre(in[2],in[3],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]),in[6]);
+                        Mestre mestre=new Mestre(in[2],in[3],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]));
                         Centro.pessoas.add(mestre);
                     }
                     else if(in[0].equals("Licenciado")){
                         dataInicio=in[4].split("/");
                         dataFim=in[5].split("/");
-                        Licenciado licenciado=new Licenciado(in[2],in[3],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]),in[6]);
+                        Licenciado licenciado=new Licenciado(in[2],in[3],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]));
                         Centro.pessoas.add(licenciado);
                     }
                     else if(in[0].equals("Doutorado")){
@@ -285,12 +246,46 @@ public class Main{
                         Doutorado doutorado=new Doutorado(in[2],in[3],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]));
                         Centro.pessoas.add(doutorado);
                     }
-                    if(in[0].equals("Projeto")){
-
-
+                    else if(in[0].equals("Projeto")){
+                        dataInicio=in[4].split("/");
+                        dataFim=in[5].split("/");
+                        Projeto projeto=new Projeto(in[1],in[2],Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Integer.parseInt(in[3]),Integer.parseInt(dataFim[0]),Integer.parseInt(dataFim[1]),Integer.parseInt(dataFim[2]));
+                        Centro.projetos.add(projeto);
+                        for (Pessoa p : CentroDeInvestigacao.pessoas) {
+                            if (p.nome.equals(in[6])){
+                                projeto.investigadorPrincipal=p;
+                            }
+                        }
                     }
-                    if(in[0].equals("Tarefa")){
-
+                    else if(in[0].equals("Documentacao")){
+                        dataInicio=in[1].split("/");
+                        dataFim=in[2].split("/");
+                        Documentacao tarefa=new Documentacao(Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Double.parseDouble(in[3]),0);
+                        for (Projeto i: Centro.projetos){
+                            if(i.nome.equals(in[4])){
+                                i.tarefas.add(tarefa);
+                            }
+                        }
+                    }
+                    else if(in[0].equals("Design")){
+                        dataInicio=in[1].split("/");
+                        dataFim=in[2].split("/");
+                        Design tarefa=new Design(Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Double.parseDouble(in[3]),0);
+                        for (Projeto i: Centro.projetos){
+                            if(i.nome.equals(in[4])){
+                                i.tarefas.add(tarefa);
+                            }
+                        }
+                    }
+                    else if(in[0].equals("Desenvolvimento")){
+                        dataInicio=in[1].split("/");
+                        dataFim=in[2].split("/");
+                        Desenvolvimento tarefa=new Desenvolvimento(Integer.parseInt(dataInicio[0]),Integer.parseInt(dataInicio[1]),Integer.parseInt(dataInicio[2]),Double.parseDouble(in[3]),0);
+                        for (Projeto i: Centro.projetos){
+                            if(i.nome.equals(in[4])){
+                                i.tarefas.add(tarefa);
+                            }
+                        }
                     }
                 }
                 br.close();

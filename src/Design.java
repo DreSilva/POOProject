@@ -1,4 +1,6 @@
-public class Design extends Tarefa {
+import java.io.Serializable;
+
+public class Design extends Tarefa implements Serializable {
 
     /*public static double taxaDeEsforco(){
 

@@ -1,4 +1,6 @@
-public class Doutorado extends Bolseiros {
+import java.io.Serializable;
+
+public class Doutorado extends Bolseiros implements Serializable {
 
     public int custo(){
         return 1000;

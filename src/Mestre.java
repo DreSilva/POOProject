@@ -1,5 +1,7 @@
-public class Mestre extends Formando {
-    protected String pessoaResponsavel;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class Mestre extends Formando implements Serializable {
 
     public int custo(){
         return 800;
@@ -54,9 +56,8 @@ public class Mestre extends Formando {
         return custoFinal;
     }*/
 
-    public Mestre(String nome, String email, int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa, String pessoaResponsavel){
+    public Mestre(String nome, String email, int diaInBolsa, int mesInBolsa, int anoInBolsa, int  diaFimBolsa, int mesFimBolsa, int anoFimBolsa){
         super(nome, email, diaInBolsa, mesInBolsa, anoInBolsa, diaFimBolsa, mesFimBolsa, anoFimBolsa);
-        this.pessoaResponsavel=pessoaResponsavel;
     }
 
 }
